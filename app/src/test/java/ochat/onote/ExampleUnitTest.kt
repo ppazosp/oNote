@@ -1,17 +1,42 @@
-package ochat.onote
-
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
+import org.mockito.Mockito.*
 
-import org.junit.Assert.*
+import ochat.onote.backend.Db
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertTrue
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
+
 class ExampleUnitTest {
+
+    private val db = Db() // Instancia real de la base de datos
+
+    /**
+     * Prueba obtenerNombres()
+     */
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun testObtenerClases() = runBlocking {
+        val clases = db.clasesParaCalendario()
+
+        // Verifica que la lista no está vacía
+        assertTrue("La lista de clases no debería estar vacía", clases.isNotEmpty())
+
+        // Imprime los resultados (opcional)
+        println("Nombres obtenidos: $clases")
+    }
+
+    /**
+     * Prueba obtenerAsignaturasComoMapa()
+     */
+    @Test
+    fun testObtenerAsignaturasComoMapa() = runBlocking {
+        val asignaturas = db.obtenerAsignaturasComoMapa()
+
+        // Verifica que el mapa no está vacío
+        assertTrue("El mapa de asignaturas no debería estar vacío", asignaturas.isNotEmpty())
+
+        // Imprime los resultados (opcional)
+        println("Asignaturas obtenidas: $asignaturas")
     }
 }
+
