@@ -67,6 +67,8 @@ import ochat.onote.ui.theme.ONoteTheme
 import ochat.onote.ui.theme.USColor
 import ochat.onote.utils.eventMap
 import ochat.onote.utils.formatDate
+import java.time.Month
+import java.util.Locale
 
 
 @Preview
@@ -79,24 +81,12 @@ fun CalendarPreview(){
 
 @Composable
 fun CalendarScreen() {
-
-    Scaffold(
-        modifier = Modifier.fillMaxSize()
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(0.5f)
-            ) {
-                MonthView()
-            }
-        }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+    ) {
+        MonthView()
     }
 }
 
@@ -106,10 +96,16 @@ fun MonthView(){
 
     // PRE CALCULATIONS
     val today = LocalDate.now()
+    val currentYear = today.year
     val columnCount = 7
 
-    val startMonth = today.minusYears(1).withDayOfMonth(1)
-    val months = (0 until 25).map { startMonth.plusMonths(it.toLong()) }
+    val startMonth = if (today.month.value >= Month.SEPTEMBER.value) {
+        LocalDate.of(currentYear, Month.SEPTEMBER, 1)
+    } else {
+        LocalDate.of(currentYear - 1, Month.SEPTEMBER, 1)
+    }
+
+    val months = (0 until 10).map { startMonth.plusMonths(it.toLong()) }
 
     val allDays = mutableListOf<LocalDate?>()
     val monthLabels = mutableMapOf<Int, String>()
@@ -120,8 +116,9 @@ fun MonthView(){
         val firstDayWeekday = (monthDays.first().dayOfWeek.value + 6) % 7
 
         val labelIndex = allDays.size
-        monthLabels[labelIndex] = month.month.name.lowercase()
-            .replaceFirstChar { it.uppercase() } + " " + month.year
+        monthLabels[labelIndex] = month.month
+            .getDisplayName(java.time.format.TextStyle.FULL, Locale("es", "ES"))
+            .uppercase(Locale("es", "ES")) + " " + month.year
 
         val lastColumn = allDays.size % columnCount
         if (lastColumn > 0) {
@@ -168,10 +165,10 @@ fun MonthView(){
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "CALENDAR",
+                text = "CALENDARIO",
                 fontFamily = MontserratFontFamily,
                 fontStyle = FontStyle.Normal,
-                fontSize = 24.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -199,7 +196,7 @@ fun MonthView(){
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
-                                text = it.uppercase(),
+                                text = it,
                                 fontFamily = MontserratFontFamily,
                                 fontStyle = FontStyle.Normal,
                                 fontSize = 20.sp,

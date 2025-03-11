@@ -34,23 +34,12 @@ fun ClassPreview(){
 
 @Composable
 fun ClassScreen(){
-    Scaffold(
-        modifier = Modifier.fillMaxSize()
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(0.5f)
-            ) {
-                ClassView()
-            }
-        }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+    ) {
+        ClassView()
     }
 }
 
@@ -63,10 +52,10 @@ fun ClassView(){
     ) {
         Box {
             Text(
-                text = "CLASSES",
+                text = "CLASES",
                 fontFamily = MontserratFontFamily,
                 fontStyle = FontStyle.Normal,
-                fontSize = 24.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = USColor
             )
@@ -85,7 +74,7 @@ fun ClassView(){
             ) {
                 Box {
                     Text(
-                        text = "NEXT CLASS",
+                        text = "SIGUIENTE CLASE",
                         fontFamily = MontserratFontFamily,
                         fontStyle = FontStyle.Normal,
                         fontSize = 20.sp,
@@ -111,7 +100,7 @@ fun ClassView(){
             {
                 Box{
                     Text(
-                        text = "LAST CLASSES",
+                        text = "CLASES ANTERIORES",
                         fontFamily = MontserratFontFamily,
                         fontStyle = FontStyle.Normal,
                         fontSize = 20.sp,

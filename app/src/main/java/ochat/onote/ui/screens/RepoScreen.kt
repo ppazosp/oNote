@@ -45,17 +45,12 @@ fun RepoPreview(){
 
 @Composable
 fun RepoScreen(){
-    Scaffold (
-        modifier = Modifier.fillMaxSize()
-    ){ innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
-        ) {
-            RepoView()
-        }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+    ) {
+        RepoView()
     }
 }
 
@@ -68,10 +63,10 @@ fun RepoView(){
     ) {
         Box {
             Text(
-                text = "ATTACHMENTS",
+                text = "ADJUNTOS",
                 fontFamily = MontserratFontFamily,
                 fontStyle = FontStyle.Normal,
-                fontSize = 24.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = USColor
             )

@@ -6,5 +6,5 @@ import java.util.Locale
 
 
 fun LocalDate.formatDate(): String {
-    return this.format(DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.getDefault()))
+    return this.format(DateTimeFormatter.ofPattern("dd MMM yyyy", Locale("es", "ES")))
 }
