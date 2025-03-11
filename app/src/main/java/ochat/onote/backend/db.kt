@@ -6,6 +6,8 @@ import com.mongodb.client.result.InsertOneResult
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 import org.bson.Document
@@ -77,16 +79,13 @@ class Db {
      * Obtiene los calendar de la colección 'subject' y los convierte
      * json
      * */
-    suspend fun obtenerAsignaturasComoMapa(): Map<String, JsonElement> {
-        // Obtener todos los documentos en una sola consulta
-        val documentos = database.getCollection<Document>("subject")
-            .find()
-            .toList()
+    suspend fun obtenerCalendar(subjectName: String): String {
+        //devolver el calendar en formato String del calendar de la Subject
+        val documento =  database.getCollection<Document>("subject")
+            .find(eq("name", subjectName))
+            .first()
 
-        // Crear el mapa con "name" como clave y "calendar" como valor en formato JsonElement
-        return documentos.associate { doc ->
-            doc.getString("name") to JsonPrimitive(doc.getString("calendar"))
-        }
+        return documento.getString("calendar")
     }
 
     /**
