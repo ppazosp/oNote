@@ -15,14 +15,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import ochat.onote.backend.Db
 import ochat.onote.ui.NavGraph
 import ochat.onote.ui.screens.GridScreen
 import ochat.onote.ui.screens.StreamingScreen
 import ochat.onote.ui.theme.ONoteTheme
 
 
+val db: Db = Db()
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

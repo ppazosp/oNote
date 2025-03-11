@@ -47,6 +47,8 @@ fun NavGraph(subjectName: String, onOpenStreaming: () -> Unit) {
     val pagerState = rememberPagerState(initialPage = 1, pageCount = { screens.size })
     val coroutineScope = rememberCoroutineScope()
 
+    //FETCH
+
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setNavigationBarColor(USColor)

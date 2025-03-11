@@ -1,4 +1,6 @@
 package ochat.onote.backend
+import com.mongodb.ConnectionString
+import com.mongodb.MongoClientSettings
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.Updates
@@ -7,29 +9,32 @@ import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 import org.bson.Document
-import java.net.URLEncoder
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonPrimitive
 import org.bson.types.Binary
 import java.io.File
-import java.util.Base64
+import java.net.URLEncoder
 
 
 /**
  * Clase de conexión a MongoDB en Kotlin usando Flow
  */
 class Db {
+
     private val username = System.getenv("MONGO_USER") ?: "davidmanuelraposeiras"
     private val password = System.getenv("MONGO_PASS") ?: "Metalor01"
     private val databaseName = "impacthon"
-    private val conectionString = "mongodb+srv://${URLEncoder.encode(username, "UTF-8")}:${URLEncoder.encode(password, "UTF-8")}" +
-            "@impacthon.vd55b.mongodb.net/?retryWrites=true&w=majority&tls=true"
+    private val conectionString = "mongodb://${URLEncoder.encode(username, "UTF-8")}:${URLEncoder.encode(password, "UTF-8")}" +
+            "@impacthon-shard-00-00.vd55b.mongodb.net:27017,impacthon-shard-00-01.vd55b.mongodb.net:27017,impacthon-shard-00-02.vd55b.mongodb.net:27017/" +
+            "?ssl=true&replicaSet=atlas-xyz-shard-0&authSource=admin&retryWrites=true&w=majority"
 
-    private val mongoClient: MongoClient = MongoClient.create(conectionString)
+    private val settings = MongoClientSettings.builder()
+        .applyConnectionString(ConnectionString(conectionString))
+        .applyToSslSettings { it.enabled(true) }
+        .build()
+
+    private val mongoClient: MongoClient = MongoClient.create(settings)
     private val database: MongoDatabase = mongoClient.getDatabase(databaseName)
 
     fun close() {
@@ -60,7 +65,7 @@ class Db {
             ) }
     }
 
-    suspend fun actualizarFotoEnSubject(subjectName: String, base64Image: String): Boolean {
+    /*suspend fun actualizarFotoEnSubject(subjectName: String, base64Image: String): Boolean {
         // Decodificar la imagen Base64 a un array de bytes
         val imageBytes = Base64.getDecoder().decode(base64Image)
         val binaryImage = Binary(imageBytes)
@@ -73,7 +78,7 @@ class Db {
             )
 
         return resultado.modifiedCount > 0 // Retorna true si se actualizó algún documento
-    }
+    }*/
 
     /**
      * Obtiene los calendar de la colección 'subject' y los convierte
@@ -217,6 +222,3 @@ class Db {
 
 
 }
-
-
-

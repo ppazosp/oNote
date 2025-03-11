@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,6 +9,7 @@ plugins {
 android {
     namespace = "ochat.onote"
     compileSdk = 35
+
 
     defaultConfig {
         applicationId = "ochat.onote"
@@ -28,14 +31,21 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
+    }
+
+    packagingOptions {
+        resources {
+            excludes += "META-INF/native-image/native-image.properties"
+            excludes += "META-INF/native-image/reflect-config.json"
+        }
     }
 }
 
@@ -54,7 +64,6 @@ dependencies {
     implementation(libs.androidx.material3)
     //MONGODB
     implementation(libs.mongodb.driver.kotlin.coroutine)
-    implementation(libs.bson.kotlinx)
     implementation(libs.mongodb.driver.sync)
     implementation(libs.slf4j.simple)
     //********
@@ -62,11 +71,9 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.kotlinx.coroutines.test.v164)
     implementation(libs.kotlinx.serialization.json)
-    testImplementation(libs.kotlin.test.v164)
-    testImplementation(libs.jetbrains.kotlin.test) // O la última versión de Kotlin
-    testImplementation(libs.junit.jupiter) // Última versión de JUnit
+    testImplementation(libs.jetbrains.kotlin.test)
+    testImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

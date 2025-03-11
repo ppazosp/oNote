@@ -57,13 +57,13 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
+import ochat.onote.data.Task
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import ochat.onote.data.Event
 import ochat.onote.ui.theme.MontserratFontFamily
 import ochat.onote.ui.theme.ONoteTheme
 import ochat.onote.ui.theme.USColor
-import ochat.onote.utils.eventMap
+import ochat.onote.utils.taskMap
 import ochat.onote.utils.formatDate
 import java.time.Month
 import java.util.Locale
@@ -88,7 +88,6 @@ fun CalendarScreen() {
     }
 }
 
-@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun MonthView(){
 
@@ -245,7 +244,7 @@ fun MonthView(){
                                         )
                                     }
 
-                                    if (eventMap.containsKey(day)) {
+                                    if (taskMap.containsKey(day)) {
                                         Box(
                                             modifier = Modifier
                                                 .size(12.dp)
@@ -284,7 +283,7 @@ fun MonthView(){
             day = expandedDay!!,
             clickedPosition = clickedPosition!!,
             monthSize = monthCardSize!!,
-            events = eventMap[expandedDay!!] ?: emptyList(),
+            events = taskMap[expandedDay!!] ?: emptyList(),
             onBack = {
                 expandedDay = null
                 clickedPosition = null
@@ -299,7 +298,7 @@ fun DayView(
     day: LocalDate,
     clickedPosition: Offset,
     monthSize: IntSize,
-    events: List<Event>,
+    events: List<Task>,
     onBack: () -> Unit
 ) {
     var moveToCenterStarted by remember { mutableStateOf(false) }
@@ -308,10 +307,10 @@ fun DayView(
     var isExpanded by remember { mutableStateOf(false) }
     var showContent by remember { mutableStateOf(false) }
 
-    var selectedEvent by rememberSaveable { mutableStateOf<Event?>(null) }
+    var selectedEvent by rememberSaveable { mutableStateOf<Task?>(null) }
     var eventCardHeight by remember { mutableStateOf(0) }
 
-    val eventPositions = remember { mutableStateMapOf<Event, Offset>() }
+    val eventPositions = remember { mutableStateMapOf<Task, Offset>() }
 
     // OFFSET CALCULATIONS
     val density = LocalDensity.current
@@ -452,7 +451,7 @@ fun DayView(
 }
 
 @Composable
-fun EventCard(event: Event, onEventClick: (Int, Offset) -> Unit) {
+fun EventCard(event: Task, onEventClick: (Int, Offset) -> Unit) {
 
     var cardHeight by remember { mutableIntStateOf(0) }
     var position by remember { mutableStateOf(Offset.Zero) }

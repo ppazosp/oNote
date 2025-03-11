@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,18 +14,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,7 +34,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import ochat.onote.R
+import ochat.onote.data.UISubject
+import ochat.onote.data.get_subjects
+//import ochat.onote.data.get_subjects
 import ochat.onote.ui.theme.MontserratFontFamily
 import ochat.onote.ui.theme.ONoteTheme
 import ochat.onote.ui.theme.USColor
@@ -71,10 +72,23 @@ fun GridScreen(onStartNavGraph: (subjectName: String) -> Unit) {
     }
 }
 
+
 @Composable
 fun GridView(onStartNavGraph: (subjectName: String) -> Unit) {
-    val items = List(20) { "INTELIGENCIA ARTIFICIAL ${it + 1}" }
     val gridState = rememberLazyGridState()
+
+    var items by remember { mutableStateOf<List<UISubject>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        isLoading = true
+        items = get_subjects()
+        isLoading = false
+    }
+
+    if (isLoading) {
+        LoadingScreen()
+    }
 
     Column(
         modifier = Modifier
@@ -107,7 +121,7 @@ fun GridView(onStartNavGraph: (subjectName: String) -> Unit) {
 }
 
 @Composable
-fun GridItem(onStartNavGraph: (subjectName: String) -> Unit, name: String) {
+fun GridItem(onStartNavGraph: (subjectName: String) -> Unit, subject: UISubject) {
     Box(
         modifier = Modifier
             .size(192.dp)
@@ -115,7 +129,7 @@ fun GridItem(onStartNavGraph: (subjectName: String) -> Unit, name: String) {
             .background(
                 color = Color.White
             )
-            .clickable { onStartNavGraph(name) },
+            .clickable { onStartNavGraph(subject.name) },
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -127,14 +141,15 @@ fun GridItem(onStartNavGraph: (subjectName: String) -> Unit, name: String) {
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)
-                    .background(USColor)
-                    .padding(16.dp),
+                    .background(USColor),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(R.drawable.brain),
+                    bitmap = subject.banner,
                     contentDescription = "Subject banner",
 
+                    modifier = Modifier
+                        .padding(16.dp)
                 )
             }
 
@@ -146,7 +161,7 @@ fun GridItem(onStartNavGraph: (subjectName: String) -> Unit, name: String) {
                 contentAlignment = Alignment.CenterEnd
             ){
                 Text(
-                    text = name,
+                    text = subject.name,
                     fontFamily = MontserratFontFamily,
                     fontStyle = FontStyle.Normal,
                     fontSize = 16.sp,
