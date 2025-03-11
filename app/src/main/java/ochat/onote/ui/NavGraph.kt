@@ -15,7 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.launch
-import ochat.onote.ui.screens.GridScreen
+import ochat.onote.ui.screens.ClassScreen
 import ochat.onote.ui.screens.RepoScreen
 import ochat.onote.ui.screens.Screen
 import ochat.wearendar.ui.screens.CalendarScreen
@@ -24,7 +24,7 @@ import ochat.wearendar.ui.screens.CalendarScreen
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NavGraph() {
-    val screens = listOf(Screen.Calendar, Screen.Grid, Screen.Repo)
+    val screens = listOf(Screen.Calendar, Screen.Class, Screen.Repo)
     val pagerState = rememberPagerState(initialPage = 1, pageCount = { screens.size })
     val coroutineScope = rememberCoroutineScope()
 
@@ -53,7 +53,7 @@ fun NavGraph() {
                 page ->
             when (screens[page]) {
                 Screen.Calendar -> CalendarScreen()
-                Screen.Grid -> GridScreen()
+                Screen.Class -> ClassScreen()
                 Screen.Repo -> RepoScreen()
             }
         }

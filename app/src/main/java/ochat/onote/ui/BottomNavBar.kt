@@ -18,7 +18,7 @@ import ochat.onote.ui.theme.USColor
 
 @Composable
 fun BottomNavigationBar(selectedIndex: Int, onItemSelected: (Int) -> Unit) {
-    val screens = listOf(Screen.Calendar, Screen.Grid, Screen.Repo)
+    val screens = listOf(Screen.Calendar, Screen.Class, Screen.Repo)
 
     AnimatedNavigationBar(
         modifier = Modifier

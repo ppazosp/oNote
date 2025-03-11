@@ -8,6 +8,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 enum class Screen(val title: String, val icon: ImageVector) {
     Calendar("Calendar",  Icons.Filled.DateRange),
-    Grid("Grid", Icons.Filled.AddCircle),
+    Class("Class", Icons.Filled.AddCircle),
     Repo("Repo", Icons.Filled.Menu)
 }
