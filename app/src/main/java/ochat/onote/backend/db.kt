@@ -14,11 +14,13 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import org.bson.types.Binary
 import java.io.File
+import java.util.Base64
+
 
 /**
  * Clase de conexión a MongoDB en Kotlin usando Flow
  */
-internal class Db {
+class Db {
     private val username = System.getenv("MONGO_USER") ?: "davidmanuelraposeiras"
     private val password = System.getenv("MONGO_PASS") ?: "Metalor01"
     private val databaseName = "impacthon"
@@ -54,6 +56,21 @@ internal class Db {
                 name = doc.getString("name"),
                 photo = doc.get("photo", Binary::class.java)
             ) }
+    }
+
+    suspend fun actualizarFotoEnSubject(subjectName: String, base64Image: String): Boolean {
+        // Decodificar la imagen Base64 a un array de bytes
+        val imageBytes = Base64.getDecoder().decode(base64Image)
+        val binaryImage = Binary(imageBytes)
+
+        // Buscar el subject por nombre y actualizar su campo "photo"
+        val resultado = database.getCollection<org.bson.Document>("subject")
+            .updateOne(
+                Filters.eq("name", subjectName), // Filtra por el nombre del subject
+                Updates.set("photo", binaryImage) // Actualiza el campo "photo"
+            )
+
+        return resultado.modifiedCount > 0 // Retorna true si se actualizó algún documento
     }
 
     /**
