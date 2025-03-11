@@ -1,7 +1,5 @@
 package ochat.onote.ui
 
-import android.annotation.SuppressLint
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,8 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavGraph
-import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import ochat.onote.ui.screens.ClassScreen
 import ochat.onote.ui.screens.RepoScreen
@@ -33,7 +29,7 @@ import ochat.onote.ui.screens.Screen
 import ochat.onote.ui.theme.MontserratFontFamily
 import ochat.onote.ui.theme.ONoteTheme
 import ochat.onote.ui.theme.USColor
-import ochat.wearendar.ui.screens.CalendarScreen
+import ochat.onote.ui.screens.CalendarScreen
 
 @Preview
 @Composable

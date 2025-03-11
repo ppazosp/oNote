@@ -42,6 +42,7 @@ android {
 dependencies {
 
     implementation(libs.animated.navigation.bar)
+    implementation(libs.accompanist.systemuicontroller)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
