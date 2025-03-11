@@ -6,6 +6,29 @@ import ochat.onote.data.EventType
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+val transcriptionLines = listOf(
+    "Hola, bienvenidos a la transcripción en tiempo real.",
+    "Esto es una prueba de cómo el texto se va añadiendo dinámicamente.",
+    "La inteligencia artificial está cambiando la forma en que interactuamos con la tecnología.",
+    "Hoy es un buen día para aprender Jetpack Compose.",
+    "Este texto es generado en tiempo real, línea por línea.",
+    "La velocidad de procesamiento es clave para una buena experiencia de usuario.",
+    "La transcripción puede ser útil en conferencias, reuniones o subtítulos en vivo.",
+    "¿Qué otras aplicaciones imaginas para esta tecnología?",
+    "A medida que el audio se procesa, el texto sigue apareciendo aquí.",
+    "Esto demuestra cómo una `LazyColumn` puede manejar grandes cantidades de datos sin problemas.",
+    "Hola, bienvenidos a la transcripción en tiempo real.",
+    "Esto es una prueba de cómo el texto se va añadiendo dinámicamente.",
+    "La inteligencia artificial está cambiando la forma en que interactuamos con la tecnología.",
+    "Hoy es un buen día para aprender Jetpack Compose.",
+    "Este texto es generado en tiempo real, línea por línea.",
+    "La velocidad de procesamiento es clave para una buena experiencia de usuario.",
+    "La transcripción puede ser útil en conferencias, reuniones o subtítulos en vivo.",
+    "¿Qué otras aplicaciones imaginas para esta tecnología?",
+    "A medida que el audio se procesa, el texto sigue apareciendo aquí.",
+    "Esto demuestra cómo una `LazyColumn` puede manejar grandes cantidades de datos sin problemas."
+)
+
 val eventMap = mapOf(
     LocalDate.of(2025, 2, 20) to listOf(
         Event("2",

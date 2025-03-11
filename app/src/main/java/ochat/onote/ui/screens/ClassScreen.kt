@@ -1,6 +1,7 @@
 package ochat.onote.ui.screens
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,23 +27,23 @@ import ochat.onote.ui.theme.USColor
 @Composable
 fun ClassPreview(){
     ONoteTheme {
-        ClassScreen()
+        ClassScreen({})
     }
 }
 
 @Composable
-fun ClassScreen(){
+fun ClassScreen(onOpenStreaming: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        ClassView()
+        ClassView(onOpenStreaming)
     }
 }
 
 @Composable
-fun ClassView(){
+fun ClassView(onOpenStreaming: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -88,6 +87,7 @@ fun ClassView(){
                         .fillMaxSize()
                         .border(2.dp, USColor)
                         .weight(0.5f)
+                        .clickable { onOpenStreaming() }
                 )
             }
 
@@ -114,18 +114,23 @@ fun ClassView(){
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(5) { index ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(128.dp)
-                                .border(2.dp, USColor)
-                                .padding(16.dp)
-                        ) {
-                            Text(text = "Item ${index + 1}")
-                        }
+                        ClassItem(index, onOpenStreaming)
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ClassItem(index: Int, onOpenStreaming: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(128.dp)
+            .border(2.dp, USColor)
+            .clickable { onOpenStreaming() }
+    ) {
+        Text(text = "Item ${index + 1}")
     }
 }

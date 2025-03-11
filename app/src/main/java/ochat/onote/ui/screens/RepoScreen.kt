@@ -68,86 +68,91 @@ fun RepoView(){
 
         LazyColumn(
             modifier = Modifier
-                .padding(horizontal = 16.dp),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(20) { index ->
-                Row(
+                RepoItem(index)
+            }
+        }
+    }
+}
+
+@Composable
+fun RepoItem(index: Int){
+    Row(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Icon(
+            painter = painterResource(R.drawable.doc),
+            contentDescription = "Document",
+            tint = Color.Unspecified,
+            modifier = Modifier.size(32.dp)
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+
+                Text(
+                    text = "Documento$index.pdf",
+                    fontFamily = MontserratFontFamily,
+                    fontStyle = FontStyle.Italic,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = USColor,
+                    maxLines = 1,
+                    softWrap = false,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(0.dp)
+            ) {
+                Text(
+                    text = "pablo.pazos.paradaa@rai.usc.es",
+                    fontFamily = MontserratFontFamily,
+                    fontStyle = FontStyle.Italic,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = USColor,
+                    maxLines = 1,
+                    softWrap = false,
+                    overflow = TextOverflow.Ellipsis,
+
                     modifier = Modifier
-                        .fillMaxSize(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                        .weight(1f),
+                    textAlign = TextAlign.Left,
+                )
 
-                    Icon(
-                        painter = painterResource(R.drawable.doc),
-                        contentDescription = "Document",
-                        tint = Color.Unspecified,
-                        modifier = Modifier.size(32.dp)
-                    )
+                Text(
+                    text = LocalDate.now().formatDate(),
+                    fontFamily = MontserratFontFamily,
+                    fontStyle = FontStyle.Italic,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = USColor,
+                    maxLines = 1,
+                    softWrap = false,
+                    overflow = TextOverflow.Ellipsis,
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-
-                            Text(
-                                text = "Documento$index.pdf",
-                                fontFamily = MontserratFontFamily,
-                                fontStyle = FontStyle.Italic,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = USColor,
-                                maxLines = 1,
-                                softWrap = false,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            horizontalArrangement = Arrangement.spacedBy(0.dp)
-                        ) {
-                            Text(
-                                text = "pablo.pazos.paradaa@rai.usc.es",
-                                fontFamily = MontserratFontFamily,
-                                fontStyle = FontStyle.Italic,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = USColor,
-                                maxLines = 1,
-                                softWrap = false,
-                                overflow = TextOverflow.Ellipsis,
-
-                                modifier = Modifier
-                                    .weight(1f),
-                                textAlign = TextAlign.Left,
-                            )
-
-                            Text(
-                                text = LocalDate.now().formatDate(),
-                                fontFamily = MontserratFontFamily,
-                                fontStyle = FontStyle.Italic,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = USColor,
-                                maxLines = 1,
-                                softWrap = false,
-                                overflow = TextOverflow.Ellipsis,
-                                
-                                modifier = Modifier
-                                    .weight(0.4f),
-                                textAlign = TextAlign.Right,
-                            )
-                        }
-                    }
-                }
+                    modifier = Modifier
+                        .weight(0.4f),
+                    textAlign = TextAlign.Right,
+                )
             }
         }
     }

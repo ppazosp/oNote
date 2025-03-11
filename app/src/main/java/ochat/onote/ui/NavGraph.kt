@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 import ochat.onote.ui.screens.ClassScreen
 import ochat.onote.ui.screens.RepoScreen
@@ -35,21 +37,26 @@ import ochat.onote.ui.screens.CalendarScreen
 @Composable
 fun NavGraphView(){
     ONoteTheme {
-        NavGraph("TEST")
+        NavGraph("TEST", {})
     }
 }
 
 @Composable
-fun NavGraph(subjectName: String) {
+fun NavGraph(subjectName: String, onOpenStreaming: () -> Unit) {
     val screens = listOf(Screen.Calendar, Screen.Class, Screen.Repo)
     val pagerState = rememberPagerState(initialPage = 1, pageCount = { screens.size })
     val coroutineScope = rememberCoroutineScope()
 
-    var currentPage by remember { mutableIntStateOf(0) }
+    val systemUiController = rememberSystemUiController()
+    SideEffect {
+        systemUiController.setNavigationBarColor(USColor)
+    }
 
+    var currentPage by remember { mutableIntStateOf(0) }
     LaunchedEffect(pagerState.currentPage) {
         currentPage = pagerState.currentPage
     }
+
 
     Scaffold(
         bottomBar = {
@@ -91,7 +98,7 @@ fun NavGraph(subjectName: String) {
             ) { page ->
                 when (screens[page]) {
                     Screen.Calendar -> CalendarScreen()
-                    Screen.Class -> ClassScreen()
+                    Screen.Class -> ClassScreen(onOpenStreaming)
                     Screen.Repo -> RepoScreen()
                 }
             }

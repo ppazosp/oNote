@@ -18,7 +18,6 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource.Companion.SideEffect
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,10 +38,11 @@ fun GridPreview(){
 
 @Composable
 fun GridScreen(onStartNavGraph: (subjectName: String) -> Unit) {
+
     val systemUiController = rememberSystemUiController()
 
     SideEffect {
-        systemUiController.setNavigationBarColor(Color.White, darkIcons = true) // Fully white nav bar
+        systemUiController.setNavigationBarColor(Color.White)
     }
 
     Scaffold(
@@ -63,7 +63,7 @@ fun GridScreen(onStartNavGraph: (subjectName: String) -> Unit) {
 
 @Composable
 fun GridView(onStartNavGraph: (subjectName: String) -> Unit) {
-    val items = List(20) { "ITEM ${it + 1}" } // Lista de 20 elementos
+    val items = List(20) { "ITEM ${it + 1}" }
     val gridState = rememberLazyGridState()
 
     Column(
@@ -85,7 +85,7 @@ fun GridView(onStartNavGraph: (subjectName: String) -> Unit) {
             state = gridState,
             modifier = Modifier
                 .fillMaxSize(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp), // Espaciado entre columnas
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(items.size) { index ->
