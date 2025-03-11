@@ -1,4 +1,5 @@
 [versions]
+accompanistSystemuicontroller = "0.30.1"
 agp = "8.8.1"
 animatedNavigationBar = "1.0.0"
 kotlin = "2.0.0"
@@ -12,6 +13,7 @@ composeBom = "2024.04.01"
 navigationCompose = "2.8.8"
 
 [libraries]
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 animated-navigation-bar = { module = "com.exyte:animated-navigation-bar", version.ref = "animatedNavigationBar" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
