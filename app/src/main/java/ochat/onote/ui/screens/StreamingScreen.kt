@@ -65,13 +65,36 @@ fun StreamingPreview(){
 @Composable
 fun StreamingScreen(){
     val systemUiController = rememberSystemUiController()
-
     SideEffect {
         systemUiController.setNavigationBarColor(Color.White)
     }
 
+    var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        selectedFileUri = uri
+    }
+
     Scaffold(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { filePickerLauncher.launch("*/*") }, // Open file picker
+                containerColor = USColor,
+                shape = CircleShape,
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.attach),
+                    tint = Color.White,
+                    contentDescription = "Attach",
+
+                    modifier = Modifier
+                        .size(32.dp)
+                )
+            }
+        }
+
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -89,89 +112,62 @@ fun StreamingScreen(){
 @Composable
 fun StreamingView() {
     var isExpanded by remember { mutableStateOf(false) }
-    var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
 
     val weight by animateFloatAsState(
-        targetValue = if (isExpanded) 0.5f else 0.07f,
+        targetValue = if (isExpanded) 0.5f else 0.15f,
         animationSpec = tween(durationMillis = 500),
         label = "Attachment Expansion"
     )
 
-    val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        selectedFileUri = uri
-    }
-
-    Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { filePickerLauncher.launch("*/*") }, // Open file picker
-                containerColor = USColor,
-                shape = CircleShape,
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.attach),
-                    tint = Color.White,
-                    contentDescription = "Attach",
-
-                    modifier = Modifier
-                        .size(32.dp)
-                )
-            }
-        }
-    ) { paddingValues ->
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(32.dp)
+    ) {
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(32.dp)
+                .fillMaxWidth()
+                .weight(1f)
+                .border(2.dp, USColor)
+                .padding(16.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .border(2.dp, USColor)
-                    .padding(16.dp)
-            ) {
-                TranscriptionView()
-            }
+            TranscriptionView()
+        }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(weight)
-                    .pointerInput(Unit) {
-                        detectVerticalDragGestures { _, dragAmount ->
-                            if (abs(dragAmount) > 10) {
-                                isExpanded = dragAmount < 0
-                            }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(weight)
+                .pointerInput(Unit) {
+                    detectVerticalDragGestures { _, dragAmount ->
+                        if (abs(dragAmount) > 10) {
+                            isExpanded = dragAmount < 0
                         }
                     }
-                    .drawBehind {
-                        drawLine(
-                            USColor,
-                            start = Offset(0f, 0f),
-                            end = Offset(size.width, 0f),
-                            strokeWidth = 2.dp.toPx()
-                        )
-                        drawLine(
-                            USColor,
-                            start = Offset(0f, 0f),
-                            end = Offset(0f, size.height),
-                            strokeWidth = 4.dp.toPx()
-                        )
-                        drawLine(
-                            USColor,
-                            start = Offset(size.width, 0f),
-                            end = Offset(size.width, size.height),
-                            strokeWidth = 4.dp.toPx()
-                        )
-                    }
-                    .padding(16.dp)
-            ) {
-                AttachmentsView()
-            }
+                }
+                .drawBehind {
+                    drawLine(
+                        USColor,
+                        start = Offset(0f, 0f),
+                        end = Offset(size.width, 0f),
+                        strokeWidth = 2.dp.toPx()
+                    )
+                    drawLine(
+                        USColor,
+                        start = Offset(0f, 0f),
+                        end = Offset(0f, size.height),
+                        strokeWidth = 4.dp.toPx()
+                    )
+                    drawLine(
+                        USColor,
+                        start = Offset(size.width, 0f),
+                        end = Offset(size.width, size.height),
+                        strokeWidth = 4.dp.toPx()
+                    )
+                }
+                .padding(16.dp)
+        ) {
+            AttachmentsView()
         }
     }
 }
