@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.exyte.animatednavbar.AnimatedNavigationBar
 import com.exyte.animatednavbar.animation.balltrajectory.Parabolic
@@ -36,7 +37,7 @@ fun BottomNavigationBar(selectedIndex: Int, onItemSelected: (Int) -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = screen.icon,
+                    painter = painterResource(screen.icon),
                     contentDescription = screen.title,
                     modifier = Modifier.size(24.dp),
                     tint = if (selectedIndex != index) Color.LightGray else Color.White
