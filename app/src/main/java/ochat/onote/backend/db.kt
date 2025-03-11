@@ -4,13 +4,14 @@ import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 import org.bson.Document
 import java.net.URLEncoder
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
 
 /**
  * Clase de conexión a MongoDB en Kotlin usando Flow
@@ -30,13 +31,41 @@ internal class Db {
     }
 
     /**
-     * Obtiene los documentos de la colección 'subject' como un Flow
+     * Obtiene los nombres de la colección 'subject' como un Flow
+     * !! USO CON rememberCouroutineScope() !!
+     * Ejemplo: val coroutineScope = rememberCoroutineScope()
+     *
+     * Button(onClick = {
+     *     coroutineScope.launch {
+     *         val nombres = db.obtenerNombres()
+     *         Log.d("MongoDB", nombres.toString())
+     *     }
+     * }) {
+     *     Text("Obtener Nombres")
+     * }
      */
-    fun obtenerDocumentos(): Flow<Document> = flow {
-        val collection = database.getCollection<Document>("subject")
-        val documentos = collection.find().toList()
-        documentos.forEach { emit(it) }
-    }.flowOn(Dispatchers.IO) // Se ejecuta en un hilo de I/O para evitar bloquear el principal
+    suspend fun obtenerNombres(): List<String> {
+        return database.getCollection<Document>("subject")
+            .find()
+            .toList()
+            .map { it.getString("name") } // Extraer solo los nombres
+    }
+
+    /**
+     * Obtiene los calendar de la colección 'subject' y los convierte
+     * json
+     * */
+    suspend fun obtenerAsignaturasComoMapa(): Map<String, JsonElement> {
+        // Obtener todos los documentos en una sola consulta
+        val documentos = database.getCollection<Document>("subject")
+            .find()
+            .toList()
+
+        // Crear el mapa con "name" como clave y "calendar" como valor en formato JsonElement
+        return documentos.associate { doc ->
+            doc.getString("name") to JsonPrimitive(doc.getString("calendar"))
+        }
+    }
 
     /**
      * Actualiza los códigos de todos los documentos de la colección 'subject'
@@ -63,6 +92,9 @@ internal class Db {
         val caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         return (1..8).map { caracteres.random() }.joinToString("")
     }
+
+
+
 }
 
 

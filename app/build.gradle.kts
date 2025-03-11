@@ -60,7 +60,10 @@ dependencies {
     //********
     implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.kotlinx.coroutines.test.v164)
+    implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.kotlin.test.v164)
     testImplementation(libs.jetbrains.kotlin.test) // O la última versión de Kotlin
     testImplementation(libs.junit.jupiter) // Última versión de JUnit
