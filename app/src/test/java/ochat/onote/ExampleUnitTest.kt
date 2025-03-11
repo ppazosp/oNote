@@ -15,14 +15,14 @@ class ExampleUnitTest {
      * Prueba obtenerNombres()
      */
     @Test
-    fun testObtenerNombres() = runBlocking {
-        val nombres = db.obtenerNombres()
+    fun testObtenerClases() = runBlocking {
+        val clases = db.clasesParaCalendario()
 
         // Verifica que la lista no está vacía
-        assertTrue("La lista de nombres no debería estar vacía", nombres.isNotEmpty())
+        assertTrue("La lista de clases no debería estar vacía", clases.isNotEmpty())
 
         // Imprime los resultados (opcional)
-        println("Nombres obtenidos: $nombres")
+        println("Nombres obtenidos: $clases")
     }
 
     /**

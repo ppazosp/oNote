@@ -85,6 +85,21 @@ internal class Db {
         }
     }
 
+    suspend fun clasesParaCalendario(): List<Clase> {
+        val clases = database.getCollection<Document>("class")
+            .find()
+            .toList()
+            .map { doc ->
+                Clase(
+                    name = doc.getString("name"),
+                    profesor = doc.getString("profesor"),
+                    date_start = doc.getDate("date_start"),
+                    date_end = doc.getDate("date_end")
+                )
+            }
+        return clases
+    }
+
     /**
      * Genera un código aleatorio de 8 caracteres
      */
