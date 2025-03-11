@@ -1,16 +1,23 @@
 package ochat.onote.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,12 +25,17 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import ochat.onote.R
 import ochat.onote.ui.theme.MontserratFontFamily
 import ochat.onote.ui.theme.ONoteTheme
 import ochat.onote.ui.theme.USColor
@@ -48,13 +60,11 @@ fun GridScreen(onStartNavGraph: (subjectName: String) -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
         ) {
             GridView(onStartNavGraph)
         }
@@ -63,7 +73,7 @@ fun GridScreen(onStartNavGraph: (subjectName: String) -> Unit) {
 
 @Composable
 fun GridView(onStartNavGraph: (subjectName: String) -> Unit) {
-    val items = List(20) { "ITEM ${it + 1}" }
+    val items = List(20) { "INTELIGENCIA ARTIFICIAL ${it + 1}" }
     val gridState = rememberLazyGridState()
 
     Column(
@@ -81,7 +91,7 @@ fun GridView(onStartNavGraph: (subjectName: String) -> Unit) {
         )
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+            columns = GridCells.Fixed(1),
             state = gridState,
             modifier = Modifier
                 .fillMaxSize(),
@@ -100,20 +110,54 @@ fun GridView(onStartNavGraph: (subjectName: String) -> Unit) {
 fun GridItem(onStartNavGraph: (subjectName: String) -> Unit, name: String) {
     Box(
         modifier = Modifier
-            .aspectRatio(1f)
+            .size(192.dp)
+            .border(2.dp, USColor)
             .background(
-                color = USColor
+                color = Color.White
             )
             .clickable { onStartNavGraph(name) },
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = name,
-            fontFamily = MontserratFontFamily,
-            fontStyle = FontStyle.Normal,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Normal,
-            color = Color.White
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.End
+        ){
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f)
+                    .background(USColor)
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.brain),
+                    contentDescription = "Subject banner",
+
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .background(Color.White),
+                contentAlignment = Alignment.CenterEnd
+            ){
+                Text(
+                    text = name,
+                    fontFamily = MontserratFontFamily,
+                    fontStyle = FontStyle.Normal,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = USColor,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    softWrap = false,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
     }
 }

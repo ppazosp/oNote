@@ -83,6 +83,8 @@ fun StreamingScreen(){
                 onClick = { filePickerLauncher.launch("*/*") }, // Open file picker
                 containerColor = USColor,
                 shape = CircleShape,
+                modifier = Modifier
+                    .padding(end = 16.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.attach),
@@ -156,13 +158,13 @@ fun StreamingView() {
                         USColor,
                         start = Offset(0f, 0f),
                         end = Offset(0f, size.height),
-                        strokeWidth = 4.dp.toPx()
+                        strokeWidth = 2.dp.toPx()
                     )
                     drawLine(
                         USColor,
                         start = Offset(size.width, 0f),
                         end = Offset(size.width, size.height),
-                        strokeWidth = 4.dp.toPx()
+                        strokeWidth = 2.dp.toPx()
                     )
                 }
                 .padding(16.dp)
