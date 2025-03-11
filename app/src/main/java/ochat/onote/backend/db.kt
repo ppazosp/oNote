@@ -46,11 +46,14 @@ internal class Db {
      *     Text("Obtener Nombres")
      * }
      */
-    suspend fun obtenerNombres(): List<String> {
+    suspend fun obtenerSubject(): List<Subject> {
         return database.getCollection<Document>("subject")
             .find()
             .toList()
-            .map { it.getString("name") } // Extraer solo los nombres
+            .map { doc -> Subject(
+                name = doc.getString("name"),
+                photo = doc.get("photo", Binary::class.java)
+            ) }
     }
 
     /**
@@ -93,6 +96,7 @@ internal class Db {
             .toList()
             .map { doc ->
                 Clase(
+                    id = doc.getObjectId("_id").toHexString(),
                     name = doc.getString("name"),
                     profesor = doc.getString("profesor"),
                     date_start = doc.getDate("date_start"),
@@ -114,6 +118,7 @@ internal class Db {
             .toList()
             .map { doc ->
                 MyFile(
+                    id = doc.getObjectId("_id").toHexString(), // Convertir el ObjectId a String
                     data = doc.get("data", Binary::class.java), // Extrae los datos binarios
                     name = doc.getString("name"), // Nombre del archivo
                     type = doc.getString("type"), // Tipo del archivo (ej. "pdf", "png")
@@ -158,6 +163,7 @@ internal class Db {
             .toList()
             .map { doc ->
                 MyFile(
+                    id = doc.getObjectId("_id").toHexString(), // Convertir el ObjectId a Stringº
                     data = doc.get("data", Binary::class.java), // Extrae los datos binarios
                     name = doc.getString("name"), // Nombre del archivo
                     type = doc.getString("type"), // Tipo del archivo (ej. "pdf", "png")
