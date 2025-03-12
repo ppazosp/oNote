@@ -109,7 +109,7 @@ suspend fun fetchReminder(): List<Reminder> {
 
     Log.d("FETCH", "GettingReminders...")
 
-    val response: HttpResponse = client.get("http://10.0.2.2:8080/reminder")
+    val response: HttpResponse = client.get("http://10.0.2.2:8080/reminders")
 
     Log.d("FETCH", "Got Reminders")
 

@@ -18,6 +18,8 @@ import java.util.Base64
 import java.util.Locale
 
 
+val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
 fun LocalDate.formatDate(): String {
     return this.format(DateTimeFormatter.ofPattern("dd MMM yyyy", Locale("es", "ES")))
 }

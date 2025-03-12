@@ -25,7 +25,10 @@ import ochat.onote.data.UIClass
 import ochat.onote.ui.theme.MontserratFontFamily
 import ochat.onote.ui.theme.ONoteTheme
 import ochat.onote.ui.theme.USColor
+import ochat.onote.utils.formatDate
+import ochat.onote.utils.timeFormatter
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 @Preview
@@ -122,8 +125,10 @@ fun ClassView(classItems: List<UIClass>, onOpenStreaming: () -> Unit) {
                     modifier = Modifier,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(classItems.size) { index ->
-                        ClassItem(classItems[index], onOpenStreaming)
+                    val filteredClassItems = classItems.drop(1)
+
+                    items(filteredClassItems.size) { index ->
+                        ClassItem(filteredClassItems[index], onOpenStreaming)
                     }
                 }
             }
@@ -158,7 +163,7 @@ fun NextClassItem(classs: UIClass) {
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Text(
-            text = "Clase 1 ~ Julio",
+            text = "${classs.name} ~ ${classs.teacher}",
             fontFamily = MontserratFontFamily,
             fontStyle = FontStyle.Normal,
             fontSize = 22.sp,
@@ -170,7 +175,7 @@ fun NextClassItem(classs: UIClass) {
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Text(
-                text = "17:00 - 18:00",
+                text = "${classs.startDate.format(timeFormatter)} - ${classs.endDate.format(timeFormatter)}",
                 fontFamily = MontserratFontFamily,
                 fontStyle = FontStyle.Normal,
                 fontSize = 20.sp,
@@ -179,7 +184,7 @@ fun NextClassItem(classs: UIClass) {
             )
 
             Text(
-                text = "11 Mar 2025",
+                text = classs.startDate.toLocalDate().formatDate(),
                 fontFamily = MontserratFontFamily,
                 fontStyle = FontStyle.Normal,
                 fontSize = 18.sp,
@@ -192,8 +197,6 @@ fun NextClassItem(classs: UIClass) {
 
 @Composable
 fun ClassItem(classs: UIClass, onOpenStreaming: () -> Unit) {
-
-
 
     Box(
         modifier = Modifier
@@ -210,19 +213,18 @@ fun ClassItem(classs: UIClass, onOpenStreaming: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Text(
-                text = "Clase 1 ~ Julio",
+                text = "${classs.name} ~ ${classs.teacher}",
                 fontFamily = MontserratFontFamily,
                 fontStyle = FontStyle.Normal,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = USColor
             )
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Text(
-                    text = "17:00 - 18:00",
+                    text = "${classs.startDate.format(timeFormatter)} - ${classs.endDate.format(timeFormatter)}",
                     fontFamily = MontserratFontFamily,
                     fontStyle = FontStyle.Normal,
                     fontSize = 16.sp,
@@ -231,7 +233,7 @@ fun ClassItem(classs: UIClass, onOpenStreaming: () -> Unit) {
                 )
 
                 Text(
-                    text = "11 Mar 2025",
+                    text = classs.startDate.toLocalDate().formatDate(),
                     fontFamily = MontserratFontFamily,
                     fontStyle = FontStyle.Normal,
                     fontSize = 14.sp,

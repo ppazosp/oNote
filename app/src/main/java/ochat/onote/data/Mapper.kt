@@ -1,8 +1,6 @@
 package ochat.onote.data
 
 import android.content.Context
-import android.util.Log
-import androidx.compose.ui.graphics.Color
 import ochat.onote.backend.Class
 import ochat.onote.backend.Files
 import ochat.onote.backend.Reminder
@@ -19,16 +17,6 @@ fun subjectToUISubject(subject: Subject, context: Context): UISubject {
 
     return UISubject(subject.name, decodeBase64Image(subject.photo, context))
 }
-
-fun Color.toArgbColor(): Int {
-    return android.graphics.Color.argb(
-        (alpha * 255).toInt(),
-        (red * 255).toInt(),
-        (green * 255).toInt(),
-        (blue * 255).toInt()
-    )
-}
-
 
 suspend fun getSubjects(context: Context): List<UISubject> {
     val subjectList = fetchSubjects()

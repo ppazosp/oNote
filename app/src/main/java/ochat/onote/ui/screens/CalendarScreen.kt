@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -49,6 +50,7 @@ import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -65,6 +67,7 @@ import ochat.onote.ui.theme.ONoteTheme
 import ochat.onote.ui.theme.USColor
 import ochat.onote.utils.taskMap
 import ochat.onote.utils.formatDate
+import ochat.onote.utils.timeFormatter
 import java.time.Month
 import java.util.Locale
 
@@ -92,7 +95,7 @@ fun groupRemindersByDate(reminders: List<UIReminder>): Map<LocalDate, List<UIRem
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd") // Adjust format as needed
 
     return reminders.groupBy { reminder ->
-        LocalDate.parse(reminder.date, formatter)
+        reminder.date.toLocalDate()
     }
 }
 
@@ -315,11 +318,6 @@ fun DayView(
     var isExpanded by remember { mutableStateOf(false) }
     var showContent by remember { mutableStateOf(false) }
 
-    var selectedEvent by rememberSaveable { mutableStateOf<UIReminder?>(null) }
-    var eventCardHeight by remember { mutableStateOf(0) }
-
-    val eventPositions = remember { mutableStateMapOf<UIReminder, Offset>() }
-
     // OFFSET CALCULATIONS
     val density = LocalDensity.current
     val columnSpacing = 8.dp
@@ -434,6 +432,7 @@ fun DayView(
                         text = day.formatDate().uppercase(),
                         fontFamily = MontserratFontFamily,
                         fontStyle = FontStyle.Normal,
+                        fontWeight = FontWeight.Normal,
                         fontSize = 20.sp,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -444,11 +443,7 @@ fun DayView(
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         items(events) { event ->
                             EventCard(
-                                event,
-                                onEventClick = { height, coordinates ->
-                                    selectedEvent = event
-                                    eventCardHeight = height
-                                    eventPositions[event] = coordinates },
+                                event
                             )
                         }
                     }
@@ -459,12 +454,7 @@ fun DayView(
 }
 
 @Composable
-fun EventCard(event: UIReminder, onEventClick: (Int, Offset) -> Unit) {
-
-    var cardHeight by remember { mutableIntStateOf(0) }
-    var position by remember { mutableStateOf(Offset.Zero) }
-
-    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+fun EventCard(event: UIReminder) {
 
     Box(
         modifier = Modifier
@@ -472,14 +462,6 @@ fun EventCard(event: UIReminder, onEventClick: (Int, Offset) -> Unit) {
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .background(Color.White)
             .border(2.dp, USColor)
-            .onGloballyPositioned { layoutCoordinates ->
-                cardHeight = layoutCoordinates.size.height
-                position = layoutCoordinates.positionInRoot()
-            }
-            .clickable {
-                val correctedPosition = position.copy(y = position.y - cardHeight)
-                onEventClick(cardHeight, correctedPosition)
-            }
     ) {
         Row(
             modifier = Modifier
@@ -494,14 +476,29 @@ fun EventCard(event: UIReminder, onEventClick: (Int, Offset) -> Unit) {
                     .background(USColor),
             )
 
-            Text(
-                text = event.name.uppercase(),
-                fontFamily = MontserratFontFamily,
-                fontStyle = FontStyle.Normal,
-                fontSize = 16.sp,
-                modifier = Modifier.weight(1f),
-                color = USColor
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f),
+            ) {
+                Text(
+                    text = event.name.uppercase(),
+                    fontFamily = MontserratFontFamily,
+                    fontStyle = FontStyle.Normal,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    color = USColor
+                )
+
+                Text(
+                    text = event.description.uppercase(),
+                    fontFamily = MontserratFontFamily,
+                    fontStyle = FontStyle.Normal,
+                    fontSize = 14.sp,
+                    lineHeight = 18.sp,
+                    color = USColor
+                )
+            }
 
             Column(
                 horizontalAlignment = Alignment.End,

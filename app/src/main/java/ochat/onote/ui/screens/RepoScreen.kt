@@ -100,7 +100,7 @@ fun RepoItem(file: UIFiles){
                 painter = painterResource(R.drawable.doc),
                 contentDescription = "Document",
                 tint = Color.Unspecified,
-                modifier = Modifier.size(36.dp),
+                modifier = Modifier.size(40.dp),
             )
         }
 
@@ -140,7 +140,7 @@ fun RepoItem(file: UIFiles){
                     text = file.owner,
                     fontFamily = MontserratFontFamily,
                     fontStyle = FontStyle.Italic,
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = USColor,
                     maxLines = 1,
@@ -156,7 +156,7 @@ fun RepoItem(file: UIFiles){
                     text = file.date.formatDate(),
                     fontFamily = MontserratFontFamily,
                     fontStyle = FontStyle.Italic,
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = USColor,
                     maxLines = 1,
