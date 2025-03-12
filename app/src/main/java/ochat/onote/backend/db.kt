@@ -1,4 +1,5 @@
 package ochat.onote.backend
+import android.util.Log
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
 import com.mongodb.client.model.Filters
@@ -15,22 +16,23 @@ import org.bson.Document
 import org.bson.types.Binary
 import java.io.File
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 /**
  * Clase de conexión a MongoDB en Kotlin usando Flow
  */
 class Db {
-
-    private val username = System.getenv("MONGO_USER") ?: "davidmanuelraposeiras"
-    private val password = System.getenv("MONGO_PASS") ?: "Metalor01"
+    init{
+        System.setProperty("org.mongodb.dns.disable", "true")
+    }
+    private val username = URLEncoder.encode("davidmanuelraposeiras", StandardCharsets.UTF_8.toString())
+    private val password = URLEncoder.encode("Metalor01", StandardCharsets.UTF_8.toString())
     private val databaseName = "impacthon"
-    private val conectionString = "mongodb://${URLEncoder.encode(username, "UTF-8")}:${URLEncoder.encode(password, "UTF-8")}" +
-            "@impacthon-shard-00-00.vd55b.mongodb.net:27017,impacthon-shard-00-01.vd55b.mongodb.net:27017,impacthon-shard-00-02.vd55b.mongodb.net:27017/" +
-            "?ssl=true&replicaSet=atlas-xyz-shard-0&authSource=admin&retryWrites=true&w=majority"
 
+    private val connectionString = "mongodb://davidmanuelraposeiras:Metalor01@impacthon-shard-00-00.vd55b.mongodb.net:27017,impacthon-shard-00-01.vd55b.mongodb.net:27017,impacthon-shard-00-02.vd55b.mongodb.net:27017/?ssl=true&replicaSet=atlas-v7wies-shard-0&authSource=admin&retryWrites=true&w=majority&appName=impacthon"
     private val settings = MongoClientSettings.builder()
-        .applyConnectionString(ConnectionString(conectionString))
+        .applyConnectionString(ConnectionString(connectionString))
         .applyToSslSettings { it.enabled(true) }
         .build()
 
@@ -63,6 +65,21 @@ class Db {
                 name = doc.getString("name"),
                 photo = doc.get("photo", Binary::class.java)
             ) }
+    }
+
+    suspend fun checkConnection(): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                Log.d("MongoDB", "🔄 Connecting to MongoDB...")
+                val command = Document("ping", 1)
+                database.runCommand<Document>(command)
+                Log.d("MongoDB", "✅ Connection successful!")
+                true
+            } catch (e: Exception) {
+                Log.e("MongoDB", "❌ Connection failed: ${e.message}")
+                false
+            }
+        }
     }
 
     /*suspend fun actualizarFotoEnSubject(subjectName: String, base64Image: String): Boolean {

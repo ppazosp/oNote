@@ -1,5 +1,6 @@
 package ochat.onote.data
 
+import android.util.Log
 import ochat.onote.backend.Subject
 import ochat.onote.db
 import ochat.onote.utils.binaryToImageBitmap
@@ -10,6 +11,6 @@ fun subjectToUISubject(subject: Subject): UISubject{
 }
 
 suspend fun get_subjects(): List<UISubject>{
-    val subjectList = db.obtenerSubject()
+     val subjectList = db!!.obtenerSubject()
     return subjectList.map { subjectToUISubject(it) }
 }

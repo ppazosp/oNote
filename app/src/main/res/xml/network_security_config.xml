@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">impacthon-shard-00-01.vd55b.mongodb.net</domain>
+    </domain-config>
+</network-security-config>

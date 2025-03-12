@@ -34,6 +34,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import ochat.onote.data.UISubject
 import ochat.onote.data.get_subjects
 //import ochat.onote.data.get_subjects
@@ -82,7 +84,9 @@ fun GridView(onStartNavGraph: (subjectName: String) -> Unit) {
 
     LaunchedEffect(Unit) {
         isLoading = true
-        items = get_subjects()
+        items = withContext(Dispatchers.IO) {
+            get_subjects()
+        }
         isLoading = false
     }
 
