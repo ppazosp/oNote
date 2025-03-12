@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,8 +38,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ochat.onote.data.UISubject
-import ochat.onote.data.get_subjects
-//import ochat.onote.data.get_subjects
+import ochat.onote.data.getSubjects
 import ochat.onote.ui.theme.MontserratFontFamily
 import ochat.onote.ui.theme.ONoteTheme
 import ochat.onote.ui.theme.USColor
@@ -78,6 +78,7 @@ fun GridScreen(onStartNavGraph: (subjectName: String) -> Unit) {
 @Composable
 fun GridView(onStartNavGraph: (subjectName: String) -> Unit) {
     val gridState = rememberLazyGridState()
+    val context = LocalContext.current
 
     var items by remember { mutableStateOf<List<UISubject>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
@@ -85,7 +86,7 @@ fun GridView(onStartNavGraph: (subjectName: String) -> Unit) {
     LaunchedEffect(Unit) {
         isLoading = true
         items = withContext(Dispatchers.IO) {
-            get_subjects()
+            getSubjects(context)
         }
         isLoading = false
     }

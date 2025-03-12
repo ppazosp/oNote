@@ -1,16 +1,24 @@
 package ochat.onote.data
 
-import android.util.Log
+import android.content.Context
+import android.graphics.BitmapFactory
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import ochat.onote.R
 import ochat.onote.backend.Subject
-import ochat.onote.db
+import ochat.onote.backend.fetchSubjects
 import ochat.onote.utils.binaryToImageBitmap
 
-fun subjectToUISubject(subject: Subject): UISubject{
-    val imageBitmap = binaryToImageBitmap(subject.photo);
-    return UISubject(subject.name, imageBitmap!!)
+fun subjectToUISubject(subject: Subject, context: Context): UISubject {
+    var imageBitmap = binaryToImageBitmap(subject.photo)
+    if (imageBitmap == null) {
+        val defaultBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.brain)
+        imageBitmap = defaultBitmap.asImageBitmap()
+    }
+    return UISubject(subject.name, imageBitmap)
 }
 
-suspend fun get_subjects(): List<UISubject>{
-     val subjectList = db!!.obtenerSubject()
-    return subjectList.map { subjectToUISubject(it) }
+suspend fun getSubjects(context: Context): List<UISubject> {
+    val subjectList = fetchSubjects()
+    return subjectList.map { subjectToUISubject(it, context) }
 }

@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 android {
@@ -51,8 +52,17 @@ android {
 
 dependencies {
 
+    implementation(libs.bson)
+
     implementation(libs.animated.navigation.bar)
     implementation(libs.accompanist.systemuicontroller)
+
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.serialization)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -62,12 +72,11 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    //MONGODB
-    implementation(libs.mongodb.driver.kotlin.coroutine)
-    implementation(libs.mongodb.driver.sync)
+
     implementation(libs.slf4j.simple)
-    //********
+
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.firebase.crashlytics.buildtools)
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
     testImplementation(libs.kotlinx.coroutines.test)

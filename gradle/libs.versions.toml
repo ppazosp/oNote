@@ -15,6 +15,13 @@ espressoCore = "3.6.1"
 kotlinTestVersion = "1.8.0"
 kotlinxCoroutinesTest = "1.7.3"
 kotlinxSerializationJson = "1.8.0"
+ktorClientAndroid = "2.3.5"
+ktorClientCio = "3.1.0"
+ktorClientSerialization = "2.3.5"
+ktorSerializationKotlinxJson = "3.1.0"
+ktorClientContentNegotiation = "3.1.0"
+ktorServerCore = "3.0.3"
+ktorServerNetty = "2.3.5"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.0"
 composeBom = "2024.04.01"
@@ -23,6 +30,7 @@ navigationCompose = "2.8.8"
 mongodbDriverKotlinCoroutine = "5.3.0"
 mongodbDriverSync = "5.3.0"
 slf4jSimple = "2.0.9"
+firebaseCrashlyticsBuildtools = "3.0.3"
 
 
 [libraries]
@@ -52,10 +60,18 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiter" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorClientAndroid" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorClientCio" }
+ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktorClientSerialization" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorSerializationKotlinxJson" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClientContentNegotiation" }
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktorServerCore" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktorServerNetty" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 mongodb-driver-kotlin-coroutine = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongodbDriverKotlinCoroutine" }
 mongodb-driver-sync = { module = "org.mongodb:mongodb-driver-sync", version.ref = "mongodbDriverSync" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4jSimple" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
