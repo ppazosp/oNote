@@ -1,24 +1,53 @@
 package ochat.onote.data
 
 import android.content.Context
-import android.graphics.BitmapFactory
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
-import ochat.onote.R
+import android.util.Log
+import androidx.compose.ui.graphics.Color
+import ochat.onote.backend.Class
+import ochat.onote.backend.Files
 import ochat.onote.backend.Subject
+import ochat.onote.backend.fetchClasses
+import ochat.onote.backend.fetchFiles
 import ochat.onote.backend.fetchSubjects
-import ochat.onote.utils.binaryToImageBitmap
+import ochat.onote.utils.decodeBase64Image
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 fun subjectToUISubject(subject: Subject, context: Context): UISubject {
-    var imageBitmap = binaryToImageBitmap(subject.photo)
-    if (imageBitmap == null) {
-        val defaultBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.brain)
-        imageBitmap = defaultBitmap.asImageBitmap()
-    }
-    return UISubject(subject.name, imageBitmap)
+
+    return UISubject(subject.name, decodeBase64Image(subject.photo, context))
 }
+
+fun Color.toArgbColor(): Int {
+    return android.graphics.Color.argb(
+        (alpha * 255).toInt(),
+        (red * 255).toInt(),
+        (green * 255).toInt(),
+        (blue * 255).toInt()
+    )
+}
+
 
 suspend fun getSubjects(context: Context): List<UISubject> {
     val subjectList = fetchSubjects()
     return subjectList.map { subjectToUISubject(it, context) }
+}
+
+fun filesToUIFiles(files: Files): UIFiles{
+    return UIFiles(files.name, files.ext, files.url, files.owner, LocalDate.parse(files.date))
+}
+
+suspend fun getFiles(): List<UIFiles> {
+    val filesList = fetchFiles()
+    return filesList.map { filesToUIFiles(it) }
+}
+
+fun classToUIClass(classs: Class): UIClass{
+    return UIClass(classs.id, classs.name, classs.teacher, LocalDateTime.parse(classs.startDate), LocalDateTime.parse(classs.endDate))
+}
+
+suspend fun getClasses(): List<UIClass> {
+    val classesList = fetchClasses()
+    Log.d("FETCH", classesList.size.toString())
+    return classesList.map { classToUIClass(it) }
 }

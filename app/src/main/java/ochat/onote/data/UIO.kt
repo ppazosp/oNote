@@ -1,11 +1,9 @@
 package ochat.onote.data
 
+import android.graphics.Bitmap
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.Base64
 
 data class Task(
     val id: String,
@@ -29,19 +27,19 @@ data class UIClass(
     val id: String,
     val name: String,
     val teacher: String,
-    val startDate: LocalDate,
-    val endDate: LocalDate,
+    val startDate: LocalDateTime,
+    val endDate: LocalDateTime,
 )
 
-data class UIAttachment(
-    val id: String,
+data class UIFiles(
     val name: String,
     val ext: String,
+    val url: String,
     val owner: String,
     val date: LocalDate,
 )
 
-data class UIAttachmentSimple(
+data class UIFilesSimple(
     val id:String,
     val name: String,
     val ext: String,
@@ -49,12 +47,12 @@ data class UIAttachmentSimple(
 
 data class UISubject(
     val name: String,
-    val banner: ImageBitmap,
+    val banner: Bitmap,
 )
 
 data class UISubjectData(
     val calendar: Map<LocalDate, List<Task>>,
     val classes: List<UIClass>,
-    val attachments: List<UIAttachment>
+    val attachments: List<UIFilesSimple>
 )
 

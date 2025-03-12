@@ -1,5 +1,6 @@
 package ochat.onote.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -23,33 +25,35 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ochat.onote.R
+import ochat.onote.data.UIFiles
 import ochat.onote.ui.theme.MontserratFontFamily
 import ochat.onote.ui.theme.ONoteTheme
 import ochat.onote.ui.theme.USColor
+import ochat.onote.utils.downloadFile
 import ochat.onote.utils.formatDate
-import java.time.LocalDate
 
 @Preview
 @Composable
 fun RepoPreview(){
     ONoteTheme {
-        RepoScreen()
+        RepoScreen(repoItems = listOf() )
     }
 }
 
 @Composable
-fun RepoScreen(){
+fun RepoScreen(repoItems: List<UIFiles>) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        RepoView()
+        RepoView(repoItems)
     }
 }
 
 @Composable
-fun RepoView(){
+fun RepoView(repoItems: List<UIFiles>) {
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -62,7 +66,7 @@ fun RepoView(){
                 fontStyle = FontStyle.Normal,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = USColor
+                color = USColor,
             )
         }
 
@@ -71,28 +75,34 @@ fun RepoView(){
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(20) { index ->
-                RepoItem(index)
+            items(repoItems.size) { index ->
+                RepoItem(repoItems[index])
             }
         }
     }
 }
 
 @Composable
-fun RepoItem(index: Int){
+fun RepoItem(file: UIFiles){
+    val context = LocalContext.current
+
     Row(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(end = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
-        Icon(
-            painter = painterResource(R.drawable.doc),
-            contentDescription = "Document",
-            tint = Color.Unspecified,
-            modifier = Modifier.size(32.dp)
-        )
+        Box(
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.doc),
+                contentDescription = "Document",
+                tint = Color.Unspecified,
+                modifier = Modifier.size(36.dp),
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -103,9 +113,8 @@ fun RepoItem(index: Int){
                     .fillMaxSize(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-
                 Text(
-                    text = "Documento$index.pdf",
+                    text = "${file.name}.${file.ext}",
                     fontFamily = MontserratFontFamily,
                     fontStyle = FontStyle.Italic,
                     fontSize = 18.sp,
@@ -113,7 +122,12 @@ fun RepoItem(index: Int){
                     color = USColor,
                     maxLines = 1,
                     softWrap = false,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+
+                    modifier = Modifier
+                        .clickable {
+                        downloadFile(context, file.url, file.name, file.ext)
+                    },
                 )
             }
 
@@ -123,7 +137,7 @@ fun RepoItem(index: Int){
                 horizontalArrangement = Arrangement.spacedBy(0.dp)
             ) {
                 Text(
-                    text = "pablo.pazos.paradaa@rai.usc.es",
+                    text = file.owner,
                     fontFamily = MontserratFontFamily,
                     fontStyle = FontStyle.Italic,
                     fontSize = 12.sp,
@@ -139,7 +153,7 @@ fun RepoItem(index: Int){
                 )
 
                 Text(
-                    text = LocalDate.now().formatDate(),
+                    text = file.date.formatDate(),
                     fontFamily = MontserratFontFamily,
                     fontStyle = FontStyle.Italic,
                     fontSize = 12.sp,

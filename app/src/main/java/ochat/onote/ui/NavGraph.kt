@@ -14,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -24,7 +25,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import ochat.onote.data.UIClass
+import ochat.onote.data.UIFiles
+import ochat.onote.data.getClasses
+import ochat.onote.data.getFiles
 import ochat.onote.ui.screens.ClassScreen
 import ochat.onote.ui.screens.RepoScreen
 import ochat.onote.ui.screens.Screen
@@ -32,6 +41,7 @@ import ochat.onote.ui.theme.MontserratFontFamily
 import ochat.onote.ui.theme.ONoteTheme
 import ochat.onote.ui.theme.USColor
 import ochat.onote.ui.screens.CalendarScreen
+import ochat.onote.ui.screens.LoadingScreen
 
 @Preview
 @Composable
@@ -59,49 +69,69 @@ fun NavGraph(subjectName: String, onOpenStreaming: () -> Unit) {
         currentPage = pagerState.currentPage
     }
 
+    var repoItems by remember { mutableStateOf<List<UIFiles>>(emptyList()) }
+    var classItems by remember { mutableStateOf<List<UIClass>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
 
-    Scaffold(
-        bottomBar = {
-            BottomNavigationBar(
-                selectedIndex = currentPage,
-                onItemSelected = { page ->
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(page)
+    LaunchedEffect(Unit) {
+        isLoading = true
+
+        val filesDeferred = async(Dispatchers.IO) { getFiles() }
+        val classesDeferred = async(Dispatchers.IO) { getClasses() }
+
+        repoItems = filesDeferred.await()
+        classItems = classesDeferred.await()
+
+        isLoading = false
+    }
+
+    if (isLoading) {
+        LoadingScreen()
+    }else {
+
+        Scaffold(
+            bottomBar = {
+                BottomNavigationBar(
+                    selectedIndex = currentPage,
+                    onItemSelected = { page ->
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(page)
+                        }
                     }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        )
-        {
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-            ){
-                Text(
-                    text = subjectName,
-                    fontFamily = MontserratFontFamily,
-                    fontStyle = FontStyle.Normal,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = USColor
                 )
             }
-
-            HorizontalPager(
-                state = pagerState,
+        ) { innerPadding ->
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-            ) { page ->
-                when (screens[page]) {
-                    Screen.Calendar -> CalendarScreen()
-                    Screen.Class -> ClassScreen(onOpenStreaming)
-                    Screen.Repo -> RepoScreen()
+                    .padding(innerPadding),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            )
+            {
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = subjectName,
+                        fontFamily = MontserratFontFamily,
+                        fontStyle = FontStyle.Normal,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = USColor
+                    )
+                }
+
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) { page ->
+                    when (screens[page]) {
+                        Screen.Calendar -> CalendarScreen()
+                        Screen.Class -> ClassScreen(classItems, onOpenStreaming)
+                        Screen.Repo -> RepoScreen(repoItems)
+                    }
                 }
             }
         }
