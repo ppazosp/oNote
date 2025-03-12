@@ -2,6 +2,7 @@ package ochat.onote.data
 
 import android.graphics.Bitmap
 import androidx.compose.ui.graphics.Color
+import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -54,5 +55,13 @@ data class UISubjectData(
     val calendar: Map<LocalDate, List<Task>>,
     val classes: List<UIClass>,
     val attachments: List<UIFilesSimple>
+)
+
+data class UIReminder(
+    val id: String,
+    val name: String,
+    val date: LocalDateTime,
+    val description: String,
+    val subject: String
 )
 

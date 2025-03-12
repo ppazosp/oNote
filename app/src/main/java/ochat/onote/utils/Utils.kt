@@ -11,11 +11,7 @@ import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import ochat.onote.ui.theme.USColor
-import org.bson.types.Binary
-import java.io.ByteArrayInputStream
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Base64

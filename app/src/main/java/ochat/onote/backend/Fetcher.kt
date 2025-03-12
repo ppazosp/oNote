@@ -57,6 +57,15 @@ data class Class(
     val subject: String,
 )
 
+@Serializable
+data class Reminder(
+    val id: String,
+    val name: String,
+    val date: String,
+    val description: String,
+    val subject: String
+)
+
 suspend fun fetchSubjects(): List<Subject> {
 
     Log.d("FETCH", "GettingSubjects...")
@@ -94,5 +103,18 @@ suspend fun fetchClasses(): List<Class> {
     val classes: List<Class> = response.body()
 
     return classes
+}
+
+suspend fun fetchReminder(): List<Reminder> {
+
+    Log.d("FETCH", "GettingReminders...")
+
+    val response: HttpResponse = client.get("http://10.0.2.2:8080/reminder")
+
+    Log.d("FETCH", "Got Reminders")
+
+    val reminders: List<Reminder> = response.body()
+
+    return reminders
 }
 

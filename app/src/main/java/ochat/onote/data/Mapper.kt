@@ -5,9 +5,11 @@ import android.util.Log
 import androidx.compose.ui.graphics.Color
 import ochat.onote.backend.Class
 import ochat.onote.backend.Files
+import ochat.onote.backend.Reminder
 import ochat.onote.backend.Subject
 import ochat.onote.backend.fetchClasses
 import ochat.onote.backend.fetchFiles
+import ochat.onote.backend.fetchReminder
 import ochat.onote.backend.fetchSubjects
 import ochat.onote.utils.decodeBase64Image
 import java.time.LocalDate
@@ -48,6 +50,14 @@ fun classToUIClass(classs: Class): UIClass{
 
 suspend fun getClasses(): List<UIClass> {
     val classesList = fetchClasses()
-    Log.d("FETCH", classesList.size.toString())
     return classesList.map { classToUIClass(it) }
+}
+
+fun reminderToUIReminder(reminder: Reminder): UIReminder{
+    return UIReminder(reminder.id, reminder.name, LocalDateTime.parse(reminder.date), reminder.description, reminder.subject)
+}
+
+suspend fun getReminders(): List<UIReminder> {
+    val remindersList = fetchReminder()
+    return remindersList.map { reminderToUIReminder(it) }
 }

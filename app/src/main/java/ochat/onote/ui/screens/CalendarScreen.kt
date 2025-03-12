@@ -1,6 +1,5 @@
 package ochat.onote.ui.screens
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -58,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import ochat.onote.data.Task
+import ochat.onote.data.UIReminder
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import ochat.onote.ui.theme.MontserratFontFamily
@@ -73,25 +73,34 @@ import java.util.Locale
 @Composable
 fun CalendarPreview(){
     ONoteTheme {
-        CalendarScreen()
+        CalendarScreen(reminderItems = listOf())
     }
 }
 
 @Composable
-fun CalendarScreen() {
+fun CalendarScreen(reminderItems: List<UIReminder>) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        MonthView()
+        MonthView(reminderItems)
+    }
+}
+
+fun groupRemindersByDate(reminders: List<UIReminder>): Map<LocalDate, List<UIReminder>> {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd") // Adjust format as needed
+
+    return reminders.groupBy { reminder ->
+        LocalDate.parse(reminder.date, formatter)
     }
 }
 
 @Composable
-fun MonthView(){
+fun MonthView(reminderItems: List<UIReminder>) {
 
-    // PRE CALCULATIONS
+    val calendarMap = groupRemindersByDate(reminderItems)
+
     val today = LocalDate.now()
     val currentYear = today.year
     val columnCount = 7
@@ -107,7 +116,6 @@ fun MonthView(){
     val allDays = mutableListOf<LocalDate?>()
     val monthLabels = mutableMapOf<Int, String>()
 
-    // DAYS ARRAY CREATION
     months.forEach { month ->
         val monthDays = (1..month.lengthOfMonth()).map { month.withDayOfMonth(it) }
         val firstDayWeekday = (monthDays.first().dayOfWeek.value + 6) % 7
@@ -244,7 +252,7 @@ fun MonthView(){
                                         )
                                     }
 
-                                    if (taskMap.containsKey(day)) {
+                                    if (calendarMap.containsKey(day)) {
                                         Box(
                                             modifier = Modifier
                                                 .size(12.dp)
@@ -283,7 +291,7 @@ fun MonthView(){
             day = expandedDay!!,
             clickedPosition = clickedPosition!!,
             monthSize = monthCardSize!!,
-            events = taskMap[expandedDay!!] ?: emptyList(),
+            events = calendarMap[expandedDay!!] ?: emptyList(),
             onBack = {
                 expandedDay = null
                 clickedPosition = null
@@ -298,7 +306,7 @@ fun DayView(
     day: LocalDate,
     clickedPosition: Offset,
     monthSize: IntSize,
-    events: List<Task>,
+    events: List<UIReminder>,
     onBack: () -> Unit
 ) {
     var moveToCenterStarted by remember { mutableStateOf(false) }
@@ -307,10 +315,10 @@ fun DayView(
     var isExpanded by remember { mutableStateOf(false) }
     var showContent by remember { mutableStateOf(false) }
 
-    var selectedEvent by rememberSaveable { mutableStateOf<Task?>(null) }
+    var selectedEvent by rememberSaveable { mutableStateOf<UIReminder?>(null) }
     var eventCardHeight by remember { mutableStateOf(0) }
 
-    val eventPositions = remember { mutableStateMapOf<Task, Offset>() }
+    val eventPositions = remember { mutableStateMapOf<UIReminder, Offset>() }
 
     // OFFSET CALCULATIONS
     val density = LocalDensity.current
@@ -451,7 +459,7 @@ fun DayView(
 }
 
 @Composable
-fun EventCard(event: Task, onEventClick: (Int, Offset) -> Unit) {
+fun EventCard(event: UIReminder, onEventClick: (Int, Offset) -> Unit) {
 
     var cardHeight by remember { mutableIntStateOf(0) }
     var position by remember { mutableStateOf(Offset.Zero) }
@@ -483,11 +491,11 @@ fun EventCard(event: Task, onEventClick: (Int, Offset) -> Unit) {
             Box(
                 modifier = Modifier
                     .size(20.dp)
-                    .background(event.type.color),
+                    .background(USColor),
             )
 
             Text(
-                text = event.title.uppercase(),
+                text = event.name.uppercase(),
                 fontFamily = MontserratFontFamily,
                 fontStyle = FontStyle.Normal,
                 fontSize = 16.sp,
@@ -495,16 +503,12 @@ fun EventCard(event: Task, onEventClick: (Int, Offset) -> Unit) {
                 color = USColor
             )
 
-            Column(horizontalAlignment = Alignment.End) {
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.Center
+            ) {
                 Text(
-                    text = event.startTime.format(timeFormatter),
-                    fontFamily = MontserratFontFamily,
-                    fontStyle = FontStyle.Normal,
-                    fontSize = 16.sp,
-                    color = USColor
-                )
-                Text(
-                    text = event.endTime.format(timeFormatter),
+                    text = event.date.format(timeFormatter),
                     fontFamily = MontserratFontFamily,
                     fontStyle = FontStyle.Normal,
                     fontSize = 16.sp,

@@ -27,13 +27,13 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ochat.onote.data.UIClass
 import ochat.onote.data.UIFiles
+import ochat.onote.data.UIReminder
 import ochat.onote.data.getClasses
 import ochat.onote.data.getFiles
+import ochat.onote.data.getReminders
 import ochat.onote.ui.screens.ClassScreen
 import ochat.onote.ui.screens.RepoScreen
 import ochat.onote.ui.screens.Screen
@@ -71,6 +71,7 @@ fun NavGraph(subjectName: String, onOpenStreaming: () -> Unit) {
 
     var repoItems by remember { mutableStateOf<List<UIFiles>>(emptyList()) }
     var classItems by remember { mutableStateOf<List<UIClass>>(emptyList()) }
+    var reminderItems by remember { mutableStateOf<List<UIReminder>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
@@ -78,9 +79,11 @@ fun NavGraph(subjectName: String, onOpenStreaming: () -> Unit) {
 
         val filesDeferred = async(Dispatchers.IO) { getFiles() }
         val classesDeferred = async(Dispatchers.IO) { getClasses() }
+        val remindersDeferred = async(Dispatchers.IO) { getReminders() }
 
         repoItems = filesDeferred.await()
         classItems = classesDeferred.await()
+        reminderItems = remindersDeferred.await()
 
         isLoading = false
     }
@@ -128,7 +131,7 @@ fun NavGraph(subjectName: String, onOpenStreaming: () -> Unit) {
                         .fillMaxSize()
                 ) { page ->
                     when (screens[page]) {
-                        Screen.Calendar -> CalendarScreen()
+                        Screen.Calendar -> CalendarScreen(reminderItems)
                         Screen.Class -> ClassScreen(classItems, onOpenStreaming)
                         Screen.Repo -> RepoScreen(repoItems)
                     }
