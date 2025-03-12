@@ -52,7 +52,7 @@ fun NavGraphView(){
 }
 
 @Composable
-fun NavGraph(subjectName: String, onOpenStreaming: () -> Unit) {
+fun NavGraph(subjectName: String, onOpenStreaming: (isOnline: Boolean) -> Unit) {
     val screens = listOf(Screen.Calendar, Screen.Class, Screen.Repo)
     val pagerState = rememberPagerState(initialPage = 1, pageCount = { screens.size })
     val coroutineScope = rememberCoroutineScope()
@@ -77,9 +77,9 @@ fun NavGraph(subjectName: String, onOpenStreaming: () -> Unit) {
     LaunchedEffect(Unit) {
         isLoading = true
 
-        val filesDeferred = async(Dispatchers.IO) { getFiles() }
-        val classesDeferred = async(Dispatchers.IO) { getClasses() }
-        val remindersDeferred = async(Dispatchers.IO) { getReminders() }
+        val filesDeferred = async(Dispatchers.IO) { getFiles(subjectName) }
+        val classesDeferred = async(Dispatchers.IO) { getClasses(subjectName) }
+        val remindersDeferred = async(Dispatchers.IO) { getReminders(subjectName) }
 
         repoItems = filesDeferred.await()
         classItems = classesDeferred.await()

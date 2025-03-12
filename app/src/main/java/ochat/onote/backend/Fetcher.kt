@@ -6,6 +6,7 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.SerialName
@@ -79,11 +80,13 @@ suspend fun fetchSubjects(): List<Subject> {
     return subjects
 }
 
-suspend fun fetchFiles(): List<Files> {
+suspend fun fetchFiles(subject: String): List<Files> {
 
     Log.d("FETCH", "GettingFiles...")
 
-    val response: HttpResponse = client.get("http://10.0.2.2:8080/files")
+    val response: HttpResponse = client.get("http://10.0.2.2:8080/files"){
+        parameter("subject", subject)
+    }
 
     Log.d("FETCH", "Got Files")
 
@@ -92,24 +95,25 @@ suspend fun fetchFiles(): List<Files> {
     return files
 }
 
-suspend fun fetchClasses(): List<Class> {
+suspend fun fetchClasses(subject: String): List<Class> {
+    Log.d("FETCH", "Getting Classes...")
 
-    Log.d("FETCH", "GettingClasses...")
-
-    val response: HttpResponse = client.get("http://10.0.2.2:8080/classes")
+    val response: HttpResponse = client.get("http://10.0.2.2:8080/classes") {
+        parameter("subject", subject)
+    }
 
     Log.d("FETCH", "Got Classes")
 
-    val classes: List<Class> = response.body()
-
-    return classes
+    return response.body()
 }
 
-suspend fun fetchReminder(): List<Reminder> {
+suspend fun fetchReminder(subject: String): List<Reminder> {
 
     Log.d("FETCH", "GettingReminders...")
 
-    val response: HttpResponse = client.get("http://10.0.2.2:8080/reminders")
+    val response: HttpResponse = client.get("http://10.0.2.2:8080/reminders") {
+        parameter("subject", subject)
+    }
 
     Log.d("FETCH", "Got Reminders")
 

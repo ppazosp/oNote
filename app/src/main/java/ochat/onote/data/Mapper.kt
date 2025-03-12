@@ -27,8 +27,8 @@ fun filesToUIFiles(files: Files): UIFiles{
     return UIFiles(files.name, files.ext, files.url, files.owner, LocalDate.parse(files.date))
 }
 
-suspend fun getFiles(): List<UIFiles> {
-    val filesList = fetchFiles()
+suspend fun getFiles(subject: String): List<UIFiles> {
+    val filesList = fetchFiles(subject)
     return filesList.map { filesToUIFiles(it) }
 }
 
@@ -36,8 +36,8 @@ fun classToUIClass(classs: Class): UIClass{
     return UIClass(classs.id, classs.name, classs.teacher, LocalDateTime.parse(classs.startDate), LocalDateTime.parse(classs.endDate))
 }
 
-suspend fun getClasses(): List<UIClass> {
-    val classesList = fetchClasses()
+suspend fun getClasses(subject: String): List<UIClass> {
+    val classesList = fetchClasses(subject)
     return classesList.map { classToUIClass(it) }
 }
 
@@ -45,7 +45,7 @@ fun reminderToUIReminder(reminder: Reminder): UIReminder{
     return UIReminder(reminder.id, reminder.name, LocalDateTime.parse(reminder.date), reminder.description, reminder.subject)
 }
 
-suspend fun getReminders(): List<UIReminder> {
-    val remindersList = fetchReminder()
+suspend fun getReminders(subject: String): List<UIReminder> {
+    val remindersList = fetchReminder(subject)
     return remindersList.map { reminderToUIReminder(it) }
 }

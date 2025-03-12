@@ -45,6 +45,7 @@ fun App() {
     var showNavGraph by remember { mutableStateOf(false) }
     var showStreamingScreen by remember { mutableStateOf(false) }
     var subjectName by remember { mutableStateOf<String?>(null) }
+    var isOnline by remember { mutableStateOf(false) }
 
     AnimatedContent(
         targetState = Triple(showNavGraph, showStreamingScreen, subjectName),
@@ -55,14 +56,18 @@ fun App() {
         when {
             isStreamingVisible -> {
                 BackHandler { showStreamingScreen = false }
-                StreamingScreen()
+                StreamingScreen(isOnline)
             }
 
             isNavGraphVisible -> {
                 BackHandler { showNavGraph = false }
                 NavGraph(
                     subjectName = subjectName!!,
-                    onOpenStreaming = { showStreamingScreen = true },
+                    onOpenStreaming = { isClassOnGoing ->
+                        showStreamingScreen = true
+                        isOnline = isClassOnGoing
+
+                    },
                 )
             }
 

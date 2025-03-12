@@ -58,12 +58,12 @@ import kotlin.math.abs
 @Composable
 fun StreamingPreview(){
     ONoteTheme {
-        StreamingScreen()
+        StreamingScreen(false)
     }
 }
 
 @Composable
-fun StreamingScreen(){
+fun StreamingScreen(isOnline: Boolean) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setNavigationBarColor(Color.White)
@@ -106,13 +106,13 @@ fun StreamingScreen(){
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            StreamingView()
+            StreamingView(isOnline)
         }
     }
 }
 
 @Composable
-fun StreamingView() {
+fun StreamingView(isOnline: Boolean) {
     var isExpanded by remember { mutableStateOf(false) }
 
     val weight by animateFloatAsState(
@@ -133,7 +133,7 @@ fun StreamingView() {
                 .border(2.dp, USColor)
                 .padding(16.dp)
         ) {
-            TranscriptionView()
+            TranscriptionView(isOnline)
         }
 
         Box(
@@ -179,21 +179,23 @@ fun getLine(): String{
 }
 
 @Composable
-fun TranscriptionView(){
+fun TranscriptionView(isOnline: Boolean) {
     val transcriptionLines = remember { mutableStateListOf<String>() }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-        while (true) {
-            val newLine = getLine()
-            if (newLine.isNotEmpty()) {
-                transcriptionLines.add(newLine)
-                coroutineScope.launch {
-                    listState.scrollToItem(transcriptionLines.size - 1)
+    if (isOnline) {
+        LaunchedEffect(Unit) {
+            while (true) {
+                val newLine = getLine()
+                if (newLine.isNotEmpty()) {
+                    transcriptionLines.add(newLine)
+                    coroutineScope.launch {
+                        listState.scrollToItem(transcriptionLines.size - 1)
+                    }
                 }
+                delay(1000)
             }
-            delay(1000)
         }
     }
 

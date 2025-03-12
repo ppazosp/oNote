@@ -40,7 +40,7 @@ fun ClassPreview(){
 }
 
 @Composable
-fun ClassScreen(classItems: List<UIClass>, onOpenStreaming: () -> Unit) {
+fun ClassScreen(classItems: List<UIClass>, onOpenStreaming: (isOnline: Boolean) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -51,7 +51,11 @@ fun ClassScreen(classItems: List<UIClass>, onOpenStreaming: () -> Unit) {
 }
 
 @Composable
-fun ClassView(classItems: List<UIClass>, onOpenStreaming: () -> Unit) {
+fun ClassView(classItems: List<UIClass>, onOpenStreaming: (isOnline: Boolean) -> Unit) {
+
+    val now = LocalDateTime.now()
+
+    val isOnline = now.isAfter(classItems.first().startDate) && now.isBefore(classItems.first().endDate)
 
     Column(
         modifier = Modifier
@@ -96,10 +100,10 @@ fun ClassView(classItems: List<UIClass>, onOpenStreaming: () -> Unit) {
                         .fillMaxSize()
                         .border(2.dp, USColor)
                         .weight(0.5f)
-                        .clickable { onOpenStreaming() }
+                        .clickable { onOpenStreaming(isOnline) }
                         .background(USColor)
                 ){
-                    NextClassItem(classItems[0])
+                    NextClassItem(classItems.first(), isOnline)
                 }
             }
 
@@ -137,11 +141,7 @@ fun ClassView(classItems: List<UIClass>, onOpenStreaming: () -> Unit) {
 }
 
 @Composable
-fun NextClassItem(classs: UIClass) {
-
-    val now = LocalDateTime.now()
-
-    val isOnline = now.isAfter(classs.startDate) && now.isBefore(classs.endDate)
+fun NextClassItem(classs: UIClass, isOnline: Boolean) {
 
     Box{
         Text(
@@ -196,14 +196,14 @@ fun NextClassItem(classs: UIClass) {
 }
 
 @Composable
-fun ClassItem(classs: UIClass, onOpenStreaming: () -> Unit) {
+fun ClassItem(classs: UIClass, onOpenStreaming: (isOnline: Boolean) -> Unit) {
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(128.dp)
             .border(2.dp, USColor)
-            .clickable { onOpenStreaming() },
+            .clickable { onOpenStreaming(false) },
     ) {
         Column(
             modifier = Modifier
