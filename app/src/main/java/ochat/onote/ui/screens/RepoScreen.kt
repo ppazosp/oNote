@@ -114,7 +114,7 @@ fun RepoItem(file: UIFiles){
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "${file.name}.${file.ext}",
+                    text = file.name,
                     fontFamily = MontserratFontFamily,
                     fontStyle = FontStyle.Italic,
                     fontSize = 18.sp,

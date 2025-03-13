@@ -1,11 +1,17 @@
 package ochat.onote.ui.screens
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -48,10 +54,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import io.ktor.http.cio.parseResponse
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import ochat.onote.R
+import ochat.onote.backend.DriveFile
 import ochat.onote.backend.TranscriptionViewModel
+import ochat.onote.backend.chat.getDriveFile
+import ochat.onote.backend.chat.uploadFile
 import ochat.onote.data.UIFilesSimple
 import ochat.onote.data.UIStreamingClass
 import ochat.onote.data.getStreamingClass
@@ -71,36 +82,93 @@ fun StreamingPreview(){
 
 @Composable
 fun StreamingScreen(isOnline: Boolean, subjectName: String, className: String,) {
+    val context = LocalContext.current
+
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setNavigationBarColor(Color.White)
     }
 
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
+    var isUploading by remember { mutableStateOf(false) }
+    var driveFileToUpload by remember { mutableStateOf<DriveFile?>(null) }
+
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         selectedFileUri = uri
+        if (uri != null) {
+            Toast.makeText(context, "File selected: ${uri.path}", Toast.LENGTH_SHORT).show()
+            driveFileToUpload = getDriveFile(context, uri, subjectName, className)
+        }
     }
+
+    LaunchedEffect(driveFileToUpload) {
+        driveFileToUpload?.let { driveFile ->
+            isUploading = true
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, "Uploading file...", Toast.LENGTH_SHORT).show()
+            }
+
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    uploadFile(driveFile)
+                }
+
+                withContext(Dispatchers.Main) {
+                    if (response.isNullOrEmpty()) {
+                        Toast.makeText(context, "Upload failed: No response from server", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "Upload successful!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            isUploading = false
+            driveFileToUpload = null
+        }
+    }
+
+    var showResume by remember { mutableStateOf<Boolean>(false) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { filePickerLauncher.launch("*/*") },
-                containerColor = USColor,
-                shape = CircleShape,
-                modifier = Modifier
-                    .padding(end = 16.dp)
+            Column(
+                modifier = Modifier.padding(end = 16.dp, bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp) // Space between buttons
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.attach),
-                    tint = Color.White,
-                    contentDescription = "Attach",
-
+                FloatingActionButton(
+                    onClick = { showResume = !showResume },
+                    containerColor = USColor,
+                    shape = CircleShape,
                     modifier = Modifier
-                        .size(32.dp)
-                )
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.stars),
+                        tint = Color.White,
+                        contentDescription = "Camera",
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+
+                FloatingActionButton(
+                    onClick = { filePickerLauncher.launch("*/*") },
+                    containerColor = USColor,
+                    shape = CircleShape,
+                    modifier = Modifier
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.attach),
+                        tint = Color.White,
+                        contentDescription = "Attach",
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
             }
         }
 
@@ -113,13 +181,13 @@ fun StreamingScreen(isOnline: Boolean, subjectName: String, className: String,) 
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            StreamingView(isOnline, className, subjectName)
+            StreamingView(isOnline, showResume, className, subjectName)
         }
     }
 }
 
 @Composable
-fun StreamingView(isOnline: Boolean, className: String, subjectName: String, ) {
+fun StreamingView(isOnline: Boolean, showResume: Boolean, className: String, subjectName: String, ) {
     var isExpanded by remember { mutableStateOf(false) }
 
     val weight by animateFloatAsState(
@@ -154,7 +222,7 @@ fun StreamingView(isOnline: Boolean, className: String, subjectName: String, ) {
                     .border(2.dp, USColor)
                     .padding(16.dp)
             ) {
-                TranscriptionView(isOnline, streamingClass!!.name, streamingClass!!.teacher, streamingClass!!.transcript)
+                TranscriptionView(isOnline, showResume, streamingClass!!.name, streamingClass!!.teacher, streamingClass!!.transcript, streamingClass!!.resume)
             }
 
             Box(
@@ -197,7 +265,7 @@ fun StreamingView(isOnline: Boolean, className: String, subjectName: String, ) {
 }
 
 @Composable
-fun TranscriptionView(isOnline: Boolean, className: String, teacherName: String, transcript: String, viewModel: TranscriptionViewModel = remember { TranscriptionViewModel() }) {
+fun TranscriptionView(isOnline: Boolean, showResume: Boolean, className: String, teacherName: String, transcript: String, resume: String, viewModel: TranscriptionViewModel = remember { TranscriptionViewModel() }) {
     val listState = rememberLazyListState()
     val streamingTranscription by viewModel.transcriptionText.collectAsState("Waiting for transcription...")
 
@@ -238,15 +306,23 @@ fun TranscriptionView(isOnline: Boolean, className: String, teacherName: String,
             modifier = Modifier.fillMaxSize().padding(0.dp),
         ) {
             item {
-                Text(
-                    text = if(isOnline) streamingTranscription else transcript,
-                    fontFamily = MontserratFontFamily,
-                    fontStyle = FontStyle.Normal,
-                    fontSize = 18.sp,
-                    lineHeight = 24.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Color.Black
-                )
+                AnimatedContent(
+                    targetState = if (isOnline) streamingTranscription else if (showResume) resume else transcript,
+                    transitionSpec = {
+                        fadeIn(animationSpec = tween(700)) togetherWith fadeOut(animationSpec = tween(700))
+                    },
+                    label = "Transcript Transition"
+                )  { targetText ->
+                    Text(
+                        text = targetText,
+                        fontFamily = MontserratFontFamily,
+                        fontStyle = FontStyle.Normal,
+                        fontSize = 18.sp,
+                        lineHeight = 24.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.Black
+                    )
+                }
             }
         }
 
@@ -277,7 +353,6 @@ fun AttachmentsView(files: List<UIFilesSimple>) {
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Log.d("hola", files.size.toString())
             items(files.size) { index ->
                 AttachmentsItem(files[index])
             }
@@ -305,7 +380,7 @@ fun AttachmentsItem(file: UIFilesSimple){
         )
 
         Text(
-            text = "${file.name}.${file.ext}",
+            text = file.name,
             fontFamily = MontserratFontFamily,
             fontStyle = FontStyle.Italic,
             fontSize = 18.sp,
