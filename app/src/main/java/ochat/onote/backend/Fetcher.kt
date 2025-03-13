@@ -60,7 +60,6 @@ data class StreamingClass(
     val teacher: String,
     val transcript: String,
     val resume: String,
-    val files: List<Files>
 )
 
 @Serializable

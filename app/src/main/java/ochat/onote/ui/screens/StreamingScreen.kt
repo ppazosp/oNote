@@ -1,11 +1,13 @@
 package ochat.onote.ui.screens
 
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
@@ -29,10 +30,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +39,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -47,25 +47,30 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import ochat.onote.R
 import ochat.onote.backend.TranscriptionViewModel
+import ochat.onote.data.UIFilesSimple
+import ochat.onote.data.UIStreamingClass
+import ochat.onote.data.getStreamingClass
 import ochat.onote.ui.theme.MontserratFontFamily
 import ochat.onote.ui.theme.ONoteTheme
 import ochat.onote.ui.theme.USColor
+import ochat.onote.utils.downloadFile
 import kotlin.math.abs
 
 @Preview
 @Composable
 fun StreamingPreview(){
     ONoteTheme {
-        StreamingScreen(false)
+        StreamingScreen(false, "Lógica", "Clase 1")
     }
 }
 
 @Composable
-fun StreamingScreen( isOnline: Boolean) {
+fun StreamingScreen(isOnline: Boolean, subjectName: String, className: String,) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setNavigationBarColor(Color.White)
@@ -82,7 +87,7 @@ fun StreamingScreen( isOnline: Boolean) {
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { filePickerLauncher.launch("*/*") }, // Open file picker
+                onClick = { filePickerLauncher.launch("*/*") },
                 containerColor = USColor,
                 shape = CircleShape,
                 modifier = Modifier
@@ -108,13 +113,13 @@ fun StreamingScreen( isOnline: Boolean) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            StreamingView(isOnline)
+            StreamingView(isOnline, className, subjectName)
         }
     }
 }
 
 @Composable
-fun StreamingView(isOnline: Boolean) {
+fun StreamingView(isOnline: Boolean, className: String, subjectName: String, ) {
     var isExpanded by remember { mutableStateOf(false) }
 
     val weight by animateFloatAsState(
@@ -123,80 +128,93 @@ fun StreamingView(isOnline: Boolean) {
         label = "Attachment Expansion"
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(32.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .border(2.dp, USColor)
-                .padding(16.dp)
-        ) {
-            TranscriptionView(isOnline)
-        }
+    var streamingClass by remember { mutableStateOf<UIStreamingClass?>(null) }
+    var isLoading by remember { mutableStateOf(true) }
 
-        Box(
+    LaunchedEffect(Unit) {
+        isLoading = true
+        streamingClass = withContext(Dispatchers.IO) {
+            getStreamingClass(className, subjectName)
+        }
+        isLoading = false
+    }
+
+    if (isLoading) {
+        LoadingScreen()
+    }else {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(weight)
-                .pointerInput(Unit) {
-                    detectVerticalDragGestures { _, dragAmount ->
-                        if (abs(dragAmount) > 10) {
-                            isExpanded = dragAmount < 0
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(32.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .border(2.dp, USColor)
+                    .padding(16.dp)
+            ) {
+                TranscriptionView(isOnline, streamingClass!!.name, streamingClass!!.teacher, streamingClass!!.transcript)
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(weight)
+                    .pointerInput(Unit) {
+                        detectVerticalDragGestures { _, dragAmount ->
+                            if (abs(dragAmount) > 10) {
+                                isExpanded = dragAmount < 0
+                            }
                         }
                     }
-                }
-                .drawBehind {
-                    drawLine(
-                        USColor,
-                        start = Offset(0f, 0f),
-                        end = Offset(size.width, 0f),
-                        strokeWidth = 2.dp.toPx()
-                    )
-                    drawLine(
-                        USColor,
-                        start = Offset(0f, 0f),
-                        end = Offset(0f, size.height),
-                        strokeWidth = 2.dp.toPx()
-                    )
-                    drawLine(
-                        USColor,
-                        start = Offset(size.width, 0f),
-                        end = Offset(size.width, size.height),
-                        strokeWidth = 2.dp.toPx()
-                    )
-                }
-                .padding(16.dp)
-        ) {
-            AttachmentsView()
+                    .drawBehind {
+                        drawLine(
+                            USColor,
+                            start = Offset(0f, 0f),
+                            end = Offset(size.width, 0f),
+                            strokeWidth = 2.dp.toPx()
+                        )
+                        drawLine(
+                            USColor,
+                            start = Offset(0f, 0f),
+                            end = Offset(0f, size.height),
+                            strokeWidth = 2.dp.toPx()
+                        )
+                        drawLine(
+                            USColor,
+                            start = Offset(size.width, 0f),
+                            end = Offset(size.width, size.height),
+                            strokeWidth = 2.dp.toPx()
+                        )
+                    }
+                    .padding(16.dp)
+            ) {
+                AttachmentsView(streamingClass!!.files)
+            }
         }
     }
-}
-
-fun getLine(): String{
-    return "This text is being rendered in real time, I promise"
 }
 
 @Composable
-fun TranscriptionView(isOnline: Boolean, viewModel: TranscriptionViewModel = remember { TranscriptionViewModel() }) {
+fun TranscriptionView(isOnline: Boolean, className: String, teacherName: String, transcript: String, viewModel: TranscriptionViewModel = remember { TranscriptionViewModel() }) {
     val listState = rememberLazyListState()
-    val transcription by viewModel.transcriptionText.collectAsState("Waiting for transcription...")
+    val streamingTranscription by viewModel.transcriptionText.collectAsState("Waiting for transcription...")
 
-    LaunchedEffect(Unit) {
-        viewModel.startListening()
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            viewModel.stopListening()
+    if (isOnline) {
+        LaunchedEffect(Unit) {
+            viewModel.startListening()
         }
-    }
 
-    LaunchedEffect(transcription) {
-        listState.animateScrollToItem(listState.layoutInfo.totalItemsCount)
+        DisposableEffect(Unit) {
+            onDispose {
+                viewModel.stopListening()
+            }
+        }
+
+        LaunchedEffect(streamingTranscription) {
+            listState.animateScrollToItem(listState.layoutInfo.totalItemsCount)
+        }
     }
 
     Column(
@@ -206,7 +224,7 @@ fun TranscriptionView(isOnline: Boolean, viewModel: TranscriptionViewModel = rem
     ) {
         Box {
             Text(
-                text = "TRANSCRIPCIÓN",
+                text = "${className.uppercase()} ~ $teacherName",
                 fontFamily = MontserratFontFamily,
                 fontStyle = FontStyle.Normal,
                 fontSize = 20.sp,
@@ -221,7 +239,7 @@ fun TranscriptionView(isOnline: Boolean, viewModel: TranscriptionViewModel = rem
         ) {
             item {
                 Text(
-                    text = transcription,
+                    text = if(isOnline) streamingTranscription else transcript,
                     fontFamily = MontserratFontFamily,
                     fontStyle = FontStyle.Normal,
                     fontSize = 18.sp,
@@ -236,7 +254,7 @@ fun TranscriptionView(isOnline: Boolean, viewModel: TranscriptionViewModel = rem
 }
 
 @Composable
-fun AttachmentsView(){
+fun AttachmentsView(files: List<UIFilesSimple>) {
 
     Column(
         modifier = Modifier
@@ -259,15 +277,18 @@ fun AttachmentsView(){
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(20) { index ->
-                AttachmentsItem(index)
+            Log.d("hola", files.size.toString())
+            items(files.size) { index ->
+                AttachmentsItem(files[index])
             }
         }
     }
 }
 
 @Composable
-fun AttachmentsItem(index: Int){
+fun AttachmentsItem(file: UIFilesSimple){
+    val context = LocalContext.current
+
     Row(
         modifier = Modifier
             .fillMaxSize(),
@@ -284,7 +305,7 @@ fun AttachmentsItem(index: Int){
         )
 
         Text(
-            text = "Documento$index.pdf",
+            text = "${file.name}.${file.ext}",
             fontFamily = MontserratFontFamily,
             fontStyle = FontStyle.Italic,
             fontSize = 18.sp,
@@ -292,7 +313,12 @@ fun AttachmentsItem(index: Int){
             color = USColor,
             maxLines = 1,
             softWrap = false,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+
+            modifier = Modifier
+            .clickable {
+                downloadFile(context, file.url, file.name, file.ext)
+            },
         )
 
     }

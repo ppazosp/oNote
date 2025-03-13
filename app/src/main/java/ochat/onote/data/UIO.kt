@@ -2,8 +2,6 @@ package ochat.onote.data
 
 import android.graphics.Bitmap
 import androidx.compose.ui.graphics.Color
-import kotlinx.serialization.Serializable
-import ochat.onote.backend.Files
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -42,20 +40,14 @@ data class UIFiles(
 )
 
 data class UIFilesSimple(
-    val id:String,
     val name: String,
     val ext: String,
+    val url: String
 )
 
 data class UISubject(
     val name: String,
     val banner: Bitmap,
-)
-
-data class UISubjectData(
-    val calendar: Map<LocalDate, List<Task>>,
-    val classes: List<UIClass>,
-    val attachments: List<UIFilesSimple>
 )
 
 data class UIReminder(
@@ -70,7 +62,7 @@ data class UIStreamingClass(
     val teacher: String,
     val transcript: String,
     val resume: String,
-    val files: List<Files>
+    val files: List<UIFilesSimple>
 )
 
 

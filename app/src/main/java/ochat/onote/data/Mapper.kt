@@ -52,9 +52,14 @@ suspend fun getReminders(subject: String): List<UIReminder> {
     return remindersList.map { reminderToUIReminder(it) }
 }
 
+fun filesToUIFilesSimple(files: Files): UIFilesSimple{
+    return UIFilesSimple(files.name, files.ext, files.url)
+}
+
 suspend fun getStreamingClass(classname: String, subject: String): UIStreamingClass {
     val streamingClass = fetchStreamingClass(classname, subject)
     val fileList = fetchClassFiles(classname, subject)
+    val uifilesList = fileList.map { filesToUIFilesSimple(it) }
 
-    return UIStreamingClass(streamingClass.name, streamingClass.teacher, streamingClass.transcript, streamingClass.resume, fileList)
+    return UIStreamingClass(streamingClass.name, streamingClass.teacher, streamingClass.transcript, streamingClass.resume, uifilesList)
 }

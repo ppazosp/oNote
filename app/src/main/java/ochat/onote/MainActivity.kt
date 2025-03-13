@@ -34,10 +34,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-
-
-
 }
 
 @Composable
@@ -45,32 +41,31 @@ fun App() {
     var showNavGraph by remember { mutableStateOf(false) }
     var showStreamingScreen by remember { mutableStateOf(false) }
     var subjectName by remember { mutableStateOf<String?>(null) }
-
     var isOnline by remember { mutableStateOf(false) }
+    var className by remember { mutableStateOf<String?>(null) }
 
     AnimatedContent(
         targetState = Triple(showNavGraph, showStreamingScreen, subjectName),
         transitionSpec = {
             fadeIn(animationSpec = tween(700)) togetherWith fadeOut(animationSpec = tween(700))
         }
-    ) { (isNavGraphVisible, isStreamingVisible) ->
+    ) { (isNavGraphVisible, isStreamingVisible, selectedSubjectName) ->
         when {
             isStreamingVisible -> {
                 BackHandler { showStreamingScreen = false }
-                StreamingScreen(isOnline)
+                StreamingScreen(isOnline, subjectName!!, className!!)
             }
-
             isNavGraphVisible -> {
                 BackHandler { showNavGraph = false }
                 NavGraph(
-                    subjectName = subjectName!!,
-                    onOpenStreaming = { isClassOnGoing ->
+                    subjectName = selectedSubjectName!!,
+                    onOpenStreaming = { isClassOnGoing, classToShow ->
                         showStreamingScreen = true
                         isOnline = isClassOnGoing
+                        className = classToShow
                     },
                 )
             }
-
             else -> {
                 GridScreen { name ->
                     showNavGraph = true

@@ -28,19 +28,18 @@ import ochat.onote.ui.theme.USColor
 import ochat.onote.utils.formatDate
 import ochat.onote.utils.timeFormatter
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 
 @Preview
 @Composable
 fun ClassPreview(){
     ONoteTheme {
-        ClassScreen(listOf()) {}
+        ClassScreen(listOf()) {_, _ ->}
     }
 }
 
 @Composable
-fun ClassScreen(classItems: List<UIClass>, onOpenStreaming: (isOnline: Boolean) -> Unit) {
+fun ClassScreen(classItems: List<UIClass>, onOpenStreaming: (isOnline: Boolean, String) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -51,7 +50,7 @@ fun ClassScreen(classItems: List<UIClass>, onOpenStreaming: (isOnline: Boolean) 
 }
 
 @Composable
-fun ClassView(classItems: List<UIClass>, onOpenStreaming: (isOnline: Boolean) -> Unit) {
+fun ClassView(classItems: List<UIClass>, onOpenStreaming: (isOnline: Boolean, String) -> Unit) {
 
     val now = LocalDateTime.now()
 
@@ -100,7 +99,10 @@ fun ClassView(classItems: List<UIClass>, onOpenStreaming: (isOnline: Boolean) ->
                         .fillMaxSize()
                         .border(2.dp, USColor)
                         .weight(0.5f)
-                        .clickable { onOpenStreaming(isOnline) }
+                        .clickable { onOpenStreaming(
+                            isOnline,
+                            classItems.first().name
+                        ) }
                         .background(USColor)
                 ){
                     NextClassItem(classItems.first(), isOnline)
@@ -196,14 +198,14 @@ fun NextClassItem(classs: UIClass, isOnline: Boolean) {
 }
 
 @Composable
-fun ClassItem(classs: UIClass, onOpenStreaming: (isOnline: Boolean) -> Unit) {
+fun ClassItem(classs: UIClass, onOpenStreaming: (isOnline: Boolean, String) -> Unit) {
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(128.dp)
             .border(2.dp, USColor)
-            .clickable { onOpenStreaming(false) },
+            .clickable { onOpenStreaming(false, classs.name) },
     ) {
         Column(
             modifier = Modifier

@@ -34,25 +34,25 @@ import ochat.onote.data.UIReminder
 import ochat.onote.data.getClasses
 import ochat.onote.data.getFiles
 import ochat.onote.data.getReminders
+import ochat.onote.ui.screens.CalendarScreen
 import ochat.onote.ui.screens.ClassScreen
+import ochat.onote.ui.screens.LoadingScreen
 import ochat.onote.ui.screens.RepoScreen
 import ochat.onote.ui.screens.Screen
 import ochat.onote.ui.theme.MontserratFontFamily
 import ochat.onote.ui.theme.ONoteTheme
 import ochat.onote.ui.theme.USColor
-import ochat.onote.ui.screens.CalendarScreen
-import ochat.onote.ui.screens.LoadingScreen
 
 @Preview
 @Composable
 fun NavGraphView(){
     ONoteTheme {
-        NavGraph("TEST", {})
+        NavGraph("TEST", { _, _ -> } )
     }
 }
 
 @Composable
-fun NavGraph(subjectName: String, onOpenStreaming: (isOnline: Boolean) -> Unit) {
+fun NavGraph(subjectName: String, onOpenStreaming: (isOnline: Boolean, String) -> Unit) {
     val screens = listOf(Screen.Calendar, Screen.Class, Screen.Repo)
     val pagerState = rememberPagerState(initialPage = 1, pageCount = { screens.size })
     val coroutineScope = rememberCoroutineScope()

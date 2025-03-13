@@ -94,35 +94,36 @@ fun GridView(onStartNavGraph: (subjectName: String) -> Unit) {
 
     if (isLoading) {
         LoadingScreen()
-    }
+    }else {
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ){
-        Text(
-            text = "ASIGNATURAS",
-            fontFamily = MontserratFontFamily,
-            fontStyle = FontStyle.Normal,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = USColor
-        )
-
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(1),
-            state = gridState,
+        Column(
             modifier = Modifier
                 .fillMaxSize(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(items.size) { index ->
-                GridItem(onStartNavGraph, items[index])
-            }
-        }
+            Text(
+                text = "ASIGNATURAS",
+                fontFamily = MontserratFontFamily,
+                fontStyle = FontStyle.Normal,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = USColor
+            )
 
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(1),
+                state = gridState,
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(items.size) { index ->
+                    GridItem(onStartNavGraph, items[index])
+                }
+            }
+
+        }
     }
 }
 
