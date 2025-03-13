@@ -45,6 +45,7 @@ fun App() {
     var showNavGraph by remember { mutableStateOf(false) }
     var showStreamingScreen by remember { mutableStateOf(false) }
     var subjectName by remember { mutableStateOf<String?>(null) }
+
     var isOnline by remember { mutableStateOf(false) }
 
     AnimatedContent(
@@ -52,7 +53,7 @@ fun App() {
         transitionSpec = {
             fadeIn(animationSpec = tween(700)) togetherWith fadeOut(animationSpec = tween(700))
         }
-    ) { (isNavGraphVisible, isStreamingVisible, selectedSubject) ->
+    ) { (isNavGraphVisible, isStreamingVisible) ->
         when {
             isStreamingVisible -> {
                 BackHandler { showStreamingScreen = false }
@@ -66,7 +67,6 @@ fun App() {
                     onOpenStreaming = { isClassOnGoing ->
                         showStreamingScreen = true
                         isOnline = isClassOnGoing
-
                     },
                 )
             }

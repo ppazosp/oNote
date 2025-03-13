@@ -65,7 +65,7 @@ fun StreamingPreview(){
 }
 
 @Composable
-fun StreamingScreen(isOnline: Boolean) {
+fun StreamingScreen( isOnline: Boolean) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setNavigationBarColor(Color.White)

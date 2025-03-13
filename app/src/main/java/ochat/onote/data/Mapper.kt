@@ -5,9 +5,11 @@ import ochat.onote.backend.Class
 import ochat.onote.backend.Files
 import ochat.onote.backend.Reminder
 import ochat.onote.backend.Subject
+import ochat.onote.backend.fetchClassFiles
 import ochat.onote.backend.fetchClasses
 import ochat.onote.backend.fetchFiles
 import ochat.onote.backend.fetchReminder
+import ochat.onote.backend.fetchStreamingClass
 import ochat.onote.backend.fetchSubjects
 import ochat.onote.utils.decodeBase64Image
 import java.time.LocalDate
@@ -42,10 +44,17 @@ suspend fun getClasses(subject: String): List<UIClass> {
 }
 
 fun reminderToUIReminder(reminder: Reminder): UIReminder{
-    return UIReminder(reminder.id, reminder.name, LocalDateTime.parse(reminder.date), reminder.description, reminder.subject)
+    return UIReminder(reminder.name, LocalDateTime.parse(reminder.date), reminder.description, reminder.subject)
 }
 
 suspend fun getReminders(subject: String): List<UIReminder> {
     val remindersList = fetchReminder(subject)
     return remindersList.map { reminderToUIReminder(it) }
+}
+
+suspend fun getStreamingClass(classname: String, subject: String): UIStreamingClass {
+    val streamingClass = fetchStreamingClass(classname, subject)
+    val fileList = fetchClassFiles(classname, subject)
+
+    return UIStreamingClass(streamingClass.name, streamingClass.teacher, streamingClass.transcript, streamingClass.resume, fileList)
 }

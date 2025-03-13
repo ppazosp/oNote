@@ -12,10 +12,6 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonNames
-import java.time.LocalDate
-import java.time.LocalDateTime
-
 
 val client = HttpClient {
     install(ContentNegotiation) {
@@ -56,6 +52,15 @@ data class Class(
     @SerialName("start_date") val startDate: String,
     @SerialName("end_date") val endDate: String,
     val subject: String,
+)
+
+@Serializable
+data class StreamingClass(
+    val name: String,
+    val teacher: String,
+    val transcript: String,
+    val resume: String,
+    val files: List<Files>
 )
 
 @Serializable
@@ -109,7 +114,7 @@ suspend fun fetchClasses(subject: String): List<Class> {
 
 suspend fun fetchReminder(subject: String): List<Reminder> {
 
-    Log.d("FETCH", "GettingReminders...")
+    Log.d("FETCH", "Getting Reminders...")
 
     val response: HttpResponse = client.get("http://100.68.193.4:8080/reminders") {
         parameter("subject", subject)
@@ -121,4 +126,37 @@ suspend fun fetchReminder(subject: String): List<Reminder> {
 
     return reminders
 }
+
+suspend fun fetchStreamingClass(name: String, subject: String): StreamingClass {
+    Log.d("FETCH", "Getting Class...")
+
+    val response: HttpResponse = client.get("http://100.68.193.4:8080/class") {
+        parameter("name", name)
+        parameter("subject", subject)
+    }
+
+    Log.d("FETCH","Got Class")
+
+    val streamingClass: StreamingClass = response.body()
+
+    return streamingClass
+}
+
+suspend fun fetchClassFiles(classname: String, subject: String): List<Files>{
+    Log.d("FETCH", "Getting ClassFiles...")
+
+    val response: HttpResponse = client.get("http://100.68.193.4:8080/classfiles") {
+        parameter("classname", classname)
+        parameter("subject", subject)
+    }
+
+    Log.d("FETCH","Got ClassFiles")
+
+    val files: List<Files> = response.body()
+
+    return files
+}
+
+
+
 
