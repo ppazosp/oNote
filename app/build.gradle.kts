@@ -52,6 +52,8 @@ android {
 
 dependencies {
 
+    implementation(libs.stream.chat.android.offline)
+
     implementation(libs.bson)
 
     implementation(libs.animated.navigation.bar)

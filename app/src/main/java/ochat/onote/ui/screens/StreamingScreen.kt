@@ -60,6 +60,7 @@ import ochat.onote.ui.theme.ONoteTheme
 import ochat.onote.ui.theme.USColor
 import ochat.onote.utils.downloadFile
 import kotlin.math.abs
+import ochat.onote.backend.ChatManager
 
 @Preview
 @Composable
@@ -138,6 +139,16 @@ fun StreamingView(isOnline: Boolean, className: String, subjectName: String, ) {
         }
         isLoading = false
     }
+
+    //Insertar funcionalidades de chat
+    if(!ChatManager.getInicializado()){
+        ChatManager.initChat(LocalContext.current)
+        ChatManager.connectUser("oNote", "onote")
+        ChatManager.watchChannel()
+        //ChatManager.sendMessage(ChatManager.getChatClient(), "livestream_ochat", "Hola, soy oNote")
+    }
+    LaunchedEffect(Unit) { }
+
 
     if (isLoading) {
         LoadingScreen()
