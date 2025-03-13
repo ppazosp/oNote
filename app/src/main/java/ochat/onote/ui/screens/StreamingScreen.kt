@@ -24,8 +24,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,10 +47,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import ochat.onote.R
+import ochat.onote.backend.TranscriptionViewModel
 import ochat.onote.ui.theme.MontserratFontFamily
 import ochat.onote.ui.theme.ONoteTheme
 import ochat.onote.ui.theme.USColor
@@ -179,24 +181,22 @@ fun getLine(): String{
 }
 
 @Composable
-fun TranscriptionView(isOnline: Boolean) {
-    val transcriptionLines = remember { mutableStateListOf<String>() }
+fun TranscriptionView(isOnline: Boolean, viewModel: TranscriptionViewModel = remember { TranscriptionViewModel() }) {
     val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
+    val transcription by viewModel.transcriptionText.collectAsState("Waiting for transcription...")
 
-    if (isOnline) {
-        LaunchedEffect(Unit) {
-            while (true) {
-                val newLine = getLine()
-                if (newLine.isNotEmpty()) {
-                    transcriptionLines.add(newLine)
-                    coroutineScope.launch {
-                        listState.scrollToItem(transcriptionLines.size - 1)
-                    }
-                }
-                delay(1000)
-            }
+    LaunchedEffect(Unit) {
+        viewModel.startListening()
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.stopListening()
         }
+    }
+
+    LaunchedEffect(transcription) {
+        listState.animateScrollToItem(listState.layoutInfo.totalItemsCount)
     }
 
     Column(
@@ -219,9 +219,9 @@ fun TranscriptionView(isOnline: Boolean) {
             state = listState,
             modifier = Modifier.fillMaxSize().padding(0.dp),
         ) {
-            items(transcriptionLines) { line ->
+            item {
                 Text(
-                    text = line,
+                    text = transcription,
                     fontFamily = MontserratFontFamily,
                     fontStyle = FontStyle.Normal,
                     fontSize = 18.sp,
@@ -231,7 +231,6 @@ fun TranscriptionView(isOnline: Boolean) {
                 )
             }
         }
-
 
     }
 }

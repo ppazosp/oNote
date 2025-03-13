@@ -71,7 +71,7 @@ suspend fun fetchSubjects(): List<Subject> {
 
     Log.d("FETCH", "GettingSubjects...")
 
-    val response: HttpResponse = client.get("http://10.0.2.2:8080/subjects")
+    val response: HttpResponse = client.get("http://100.68.193.4:8080/subjects")
 
     Log.d("FETCH", "Got Subjects")
 
@@ -84,7 +84,7 @@ suspend fun fetchFiles(subject: String): List<Files> {
 
     Log.d("FETCH", "GettingFiles...")
 
-    val response: HttpResponse = client.get("http://10.0.2.2:8080/files"){
+    val response: HttpResponse = client.get("http://100.68.193.4:8080/files"){
         parameter("subject", subject)
     }
 
@@ -98,7 +98,7 @@ suspend fun fetchFiles(subject: String): List<Files> {
 suspend fun fetchClasses(subject: String): List<Class> {
     Log.d("FETCH", "Getting Classes...")
 
-    val response: HttpResponse = client.get("http://10.0.2.2:8080/classes") {
+    val response: HttpResponse = client.get("http://100.68.193.4:8080/classes") {
         parameter("subject", subject)
     }
 
@@ -111,7 +111,7 @@ suspend fun fetchReminder(subject: String): List<Reminder> {
 
     Log.d("FETCH", "GettingReminders...")
 
-    val response: HttpResponse = client.get("http://10.0.2.2:8080/reminders") {
+    val response: HttpResponse = client.get("http://100.68.193.4:8080/reminders") {
         parameter("subject", subject)
     }
 
