@@ -1,33 +1,38 @@
 # oNote
 
-**oNote** es una aplicación móvil diseñada para la transcripción de clases universitarias en tiempo real, facilitando la organización y acceso a la información educativa.
+**oNote** is a mobile application designed to transcribe university lectures in real-time, enhancing organization and access to educational content.
 
-## Características principales
+---
 
-- **Transcripción en tiempo real**: Utiliza la API de Whisper de OpenAI con ajustes personalizados para mejorar la experiencia.
-- **Calendario integrado**: Permite agregar entregas y avisos sobre una asignatura para mejorar la organización.
-- **Gestor de archivos**: Los usuarios pueden subir documentos y asociarlos con una clase o asignatura, permitiendo el acceso compartido.
+## Key Features
 
-## Tecnologías utilizadas
+- **Real-time Transcription**: Utilizes the Whisper API from OpenAI with custom enhancements to improve transcription accuracy and user experience.
+- **Integrated Calendar**: Allows users to schedule deadlines and reminders associated with specific subjects for better academic organization.
+- **File Management System**: Users can upload and associate files with a class or subject, making them accessible to all participants.
+
+---
+
+## Technology Stack
 
 ### **Frontend**
-- Jetpack Compose en Android Studio para una interfaz moderna reactiva y nativa.
+- Jetpack Compose in Android Studio for a modern, reactive, and native user interface.
 
 ### **Backend**
-- **Spring Boot Server**: API REST para la gestión de datos y conexión con MongoDB. 
-  [Repositorio aquí](https://github.com/ppazosp/oNoteDB)
-- **MongoDB**: Base de datos NoSQL para almacenar la información de asignaturas, transcripciones y archivos.
-- **Python WebSocket Server**: Servidor transcriptor y analizador de audio mediante la API de WhisperAI.
-  [Repositorio aquí](https://github.com/ppazosp/oNoteAPIs)
+- **Spring Boot Server**: REST API responsible for data management and integration with MongoDB.  
+  [Repository here](https://github.com/ppazosp/oNoteDB)
+- **MongoDB**: NoSQL database used to store information related to subjects, transcriptions, and file resources.
+- **Python WebSocket Server**: Handles transcription and audio analysis using the WhisperAI API.  
+  [Repository here](https://github.com/ppazosp/oNoteAPIs)
 
+---
 
-## Capturas de Pantalla
+## Screenshots
 
 <table>
   <tr>
-    <td align="center"><strong>Asignaturas</strong></td>
-    <td align="center"><strong>Clases</strong></td>
-    <td align="center"><strong>Transcripción en tiempo real</strong></td>
+    <td align="center"><strong>Subjects</strong></td>
+    <td align="center"><strong>Classes</strong></td>
+    <td align="center"><strong>Real-time Transcription</strong></td>
   </tr>
   <tr>
     <td align="center"><img src="assets/screenshots/subjects_screen.jpeg" width="300"></td>
@@ -35,15 +40,15 @@
     <td align="center"><img src="assets/screenshots/class_screen.jpeg" width="300"></td>
   </tr>
   <tr>
-    <td align="center"><strong>Calendario de avisos</strong></td>
-    <td align="center"><strong>Avisos del día</strong></td>
-    <td align="center"><strong>Repositorio de archivos</strong></td>
-    <td></td>
+    <td align="center"><strong>Event Calendar</strong></td>
+    <td align="center"><strong>Daily Reminders</strong></td>
+    <td align="center"><strong>File Repository</strong></td>
   </tr>
   <tr>
     <td align="center"><img src="assets/screenshots/calendar_screen.jpeg" width="300"></td>
     <td align="center"><img src="assets/screenshots/task_screen.jpeg" width="300"></td>
     <td align="center"><img src="assets/screenshots/repo_screen.jpeg" width="300"></td>
-    <td></td>
   </tr>
 </table>
+
+---
