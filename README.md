@@ -9,6 +9,7 @@
 - **Real-time Transcription**: Utilizes the Whisper API from OpenAI with custom enhancements to improve transcription accuracy and user experience.
 - **Integrated Calendar**: Allows users to schedule deadlines and reminders associated with specific subjects for better academic organization.
 - **File Management System**: Users can upload and associate files with a class or subject, making them accessible to all participants.
+- **Real-time chat (In Development)**: Users can chat with other users while a lecture is being transcripted in real-time.
 
 ---
 
@@ -25,6 +26,7 @@
   [Repository here](https://github.com/ppazosp/oNoteVoice)
 - **Python Resume Server**: Handles the resume of the transcripted classes.  
   [Repository here](https://github.com/ppazosp/oNoteVoice)
+- **StreamChat API**: For real-time chatting.  
 
 ---
 
