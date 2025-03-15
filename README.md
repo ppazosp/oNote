@@ -22,7 +22,9 @@
   [Repository here](https://github.com/ppazosp/oNoteDB)
 - **MongoDB**: NoSQL database used to store information related to subjects, transcriptions, and file resources.
 - **Python WebSocket Server**: Handles transcription and audio analysis using the WhisperAI API.  
-  [Repository here](https://github.com/ppazosp/oNoteAPIs)
+  [Repository here](https://github.com/ppazosp/oNoteVoice)
+- **Python Resume Server**: Handles the resume of the transcripted classes.  
+  [Repository here](https://github.com/ppazosp/oNoteVoice)
 
 ---
 
