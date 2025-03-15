@@ -10,6 +10,7 @@
 - **Integrated Calendar**: Allows users to schedule deadlines and reminders associated with specific subjects for better academic organization.
 - **File Management System**: Users can upload and associate files with a class or subject, making them accessible to all participants.
 - **Real-time chat (In Development)**: Users can chat with other users while a lecture is being transcripted in real-time.
+- **Resume and Translation**: Transcriptions of lectures will be resumed and translated using OpenAI ChatGPT API.
 
 ---
 
@@ -24,7 +25,7 @@
 - **MongoDB**: NoSQL database used to store information related to subjects, transcriptions, and file resources.
 - **Python WebSocket Server**: Handles transcription and audio analysis using the WhisperAI API.  
   [Repository here](https://github.com/ppazosp/oNoteVoice)
-- **Python Resume Server**: Handles the resume of the transcripted classes.  
+- **Python Resume Server**: Handles the resume and translation of the transcripted lectures.  
   [Repository here](https://github.com/ppazosp/oNoteVoice)
 - **StreamChat API**: For real-time chatting.  
 
