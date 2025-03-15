@@ -36,11 +36,13 @@
   </tr>
   <tr>
     <td align="center"><strong>Calendario de avisos</strong></td>
+    <td align="center"><strong>Avisos del día</strong></td>
     <td align="center"><strong>Repositorio de archivos</strong></td>
     <td></td>
   </tr>
   <tr>
     <td align="center"><img src="assets/screenshots/calendar_screen.jpeg" width="300"></td>
+    <td align="center"><img src="assets/screenshots/task_screen.jpeg" width="300"></td>
     <td align="center"><img src="assets/screenshots/repo_screen.jpeg" width="300"></td>
     <td></td>
   </tr>
