@@ -21,16 +21,16 @@
 ## Capturas de Pantalla
 
 ### Asignaturas
-![Asignaturas](assets/screenshots/subjects_screen.jpeg)
+<img src="assets/screenshots/subjects_screen.jpeg" width="300">
 
 ### Clases
-![Próximas clases](assets/screenshots/classes_screen.jpeg)
+<img src="assets/screenshots/classes_screen.jpeg" width="300">
 
 ### Transcripción en tiempo real
-![Transcripción en tiempo real](assets/screenshots/class_screen.jpeg)
+<img src="assets/screenshots/class_screen.jpeg" width="300">
 
 ### Calendario de avisos
-![Calendario de avisos](assets/screenshots/calendar_screen.png)
+<img src="assets/screenshots/calendar_screen.jpeg" width="300">
 
 ### Repositorio de archivos
-![Repositorio](assets/screenshots/repo_screen.png)
+<img src="assets/screenshots/repo_screen.jpeg" width="300">
