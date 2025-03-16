@@ -36,7 +36,7 @@
 <table>
   <tr>
     <td align="center"><strong>Subjects</strong></td>
-    <td align="center"><strong>Classes</strong></td>
+    <td align="center"><strong>Lectures</strong></td>
     <td align="center"><strong>Real-time Transcription</strong></td>
   </tr>
   <tr>
